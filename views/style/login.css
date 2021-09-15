@@ -21,13 +21,20 @@ a{text-decoration: none;}
 #menu a:hover{color: #CECEF6;}
 
 /* 본문 */
-#main{margin-top: 10px; margin-bottom: 10px;}
-#main p{text-align: center;}
-#pic{width: 1000px; height: 500px; border: 1px solid red;
-  margin-left: 12px; margin-right: 12px;}
-#po{width: 1000px; margin: 0 auto; display: flex; justify-content: space-around;
-  margin-top: 30px; margin-bottom: 50px;}
-#notice{float: left;}
+#main{margin-top: 70px; margin-bottom: 10px; font-family: 'Jeju Gothic', sans-serif; text-align: center;}
+#main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
+  border-bottom: 3px solid black; width:100px; margin: 0 auto;}
+#main h3{margin-top: 10px;}
+#tabel{margin: 0 auto; margin-top: 70px;}
+#id{height: 30px; width:300px; font-size: larger;}
+#pw{height: 30px; width:300px; font-size: larger;}
+#idid{margin-right: 30px;}
+#pwpw{margin-right: 30px;}
+#btnlogin{margin-top: 80px; width: 100px; height: 40px; font-size: larger;
+   font-family: 'Jeju Gothic', sans-serif; color: #00008C; background-color: #B4B4DC;
+   border: none; border-radius: 16px; transition-duration: 0.5s;}
+#btnlogin:hover{color: #CECEF6; background-color: #6C58A4; transition-duration: 0.5s;}
 
 /* bottom */
+#bottom{margin-top: 80px;}
 #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}

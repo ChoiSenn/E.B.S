@@ -3,15 +3,26 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href = "views/style/home.css">
+    <link rel="stylesheet" href = "views/style/ex.css">
     <title>입찰공고</title>
 </head>
 <body>
   <div id="all">
-    <h1>(로고) E.B.S</h1>
-    <%- include('noLoginMenu') %>
-    <%- include('menu') %>
-    <p>입찰 공고 목록입니다.</p>
+    <div id="header">
+      <div id="top">
+        <%- include('noLoginMenu') %>
+        <h1 id="logo">(로고) E.B.S</h1>
+      </div>
+      <%- include('menu') %>
+    </div>
+    <div id="main">
+        <p>입찰 공고 게시판입니다.</p>
+    </div>
+    <div id="bottom">
+      <hr>
+      <br>
+      <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
+    </div>
   </div>
 </body>
 </html>

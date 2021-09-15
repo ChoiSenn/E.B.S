@@ -3,15 +3,60 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href = "views/style/home.css">
+    <link rel="stylesheet" href = "views/style/signUp.css">
     <title>회원가입</title>
 </head>
 <body>
   <div id="all">
-    <h1>(로고) E.B.S</h1>
-    <%- include('noLoginMenu') %>
-    <%- include('menu') %>
-    <p>회원가입 화면입니다.</p>
+    <div id="header">
+      <div id="top">
+        <%- include('noLoginMenu') %>
+        <h1 id="logo">(로고) E.B.S</h1>
+      </div>
+      <%- include('menu') %>
+    </div>
+    <div id="main">
+      <h2>회원가입</h2>
+      <div id="sign">
+        <form method="post">
+          <h3>ID와 비밀번호를 입력하여 로그인하세요.</h3>
+          <table align="center" id="tabel">
+            <tbody>
+              <tr>
+                <td><label id="idid">I  D</label></td>
+                <td><input type="TEXT" name="id" id="id"></td>
+              </tr>
+              <tr>
+                <td><label id="pwpw">비밀번호</label></td>
+                <td><input type="password" name="pw" id="pw"></td>
+              </tr>
+              <tr>
+                <td><label id="pwpw">비밀번호 확인</label></td>
+                <td><input type="password" name="pwre" id="pw"></td>
+              </tr>
+              <tr>
+                <td><label id="name">이름</label></td>
+                <td><input type="TEXT" name="name" id="name"></td>
+              </tr>
+              <tr>
+                <td><label id="name">분류</label></td>
+                <td><input type="radio" name="buyer" id="buyer"><label id="class">구매자<input type="radio" name="prov" id="prov">공급자</td>
+              </tr>
+              <tr>
+                <td><label id="name">개인정보제공동의</td>
+                <td><input type="radio" name="ch" id="ch"><label id="che">동의합니다.</td>
+              </tr>
+            </tbody>
+          </table>
+          <input type="submit" value="회원가입" id="btnsign">
+        </form>
+      </div>
+    </div>
+    <div id="bottom">
+      <hr>
+      <br>
+      <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
+    </div>
   </div>
 </body>
 </html>

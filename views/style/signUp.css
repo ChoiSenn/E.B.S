@@ -1,0 +1,41 @@
+@import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+/* 기본 설정 리셋 */
+*{margin: 0; padding: 0;}
+li{list-style: none;}
+a{text-decoration: none;}
+
+/* 전체 크기 설정 */
+#all{width: 1024px; margin: 0 auto;}
+
+/* header */
+#top{padding-top: 100px;}
+#loginMenu{float: right; margin-top: 17px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
+#lo{margin-right: 20px;}
+#menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
+  justify-content: space-around; background-color: #B4B4DC;
+  border-radius: 8px;}
+#menu a{font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+#menu a:link{color: #00008C;}
+#menu a:visited{color: #00008C;}
+#menu a:hover{color: #CECEF6;}
+
+/* 본문 */
+#main{margin-top: 70px; margin-bottom: 10px; font-family: 'Jeju Gothic', sans-serif; text-align: center;}
+#main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
+  border-bottom: 3px solid black; width:150px; margin: 0 auto;}
+#main h3{margin-top: 10px;}
+#tabel{margin: 0 auto; margin-top: 70px;}
+#id{height: 30px; width:300px; font-size: larger;}
+#pw, #name, #pwpw, #idid{height: 30px; width:300px; font-size: larger;}
+#buyer, #prov{height: 16px; width:30px; font-size: larger; margin-top: 5px;}
+#ch{height: 16px; width: 30px; margin-top: 5px;}
+#class, #che{padding-right: 20px;}
+#btnsign{margin-top: 80px; width: 100px; height: 40px; font-size: larger;
+   font-family: 'Jeju Gothic', sans-serif; color: #00008C; background-color: #B4B4DC;
+   border: none; border-radius: 16px; transition-duration: 0.5s;}
+#btnsign:hover{color: #CECEF6; background-color: #6C58A4; transition-duration: 0.5s;}
+
+/* bottom */
+#bottom{margin-top: 80px;}
+#bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}

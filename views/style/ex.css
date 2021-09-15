@@ -21,13 +21,8 @@ a{text-decoration: none;}
 #menu a:hover{color: #CECEF6;}
 
 /* 본문 */
-#main{margin-top: 10px; margin-bottom: 10px;}
+#main{padding-top: 300px; padding-bottom: 300px;}
 #main p{text-align: center;}
-#pic{width: 1000px; height: 500px; border: 1px solid red;
-  margin-left: 12px; margin-right: 12px;}
-#po{width: 1000px; margin: 0 auto; display: flex; justify-content: space-around;
-  margin-top: 30px; margin-bottom: 50px;}
-#notice{float: left;}
 
 /* bottom */
 #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}
