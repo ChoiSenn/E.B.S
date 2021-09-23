@@ -11,7 +11,9 @@
     <div id="header">
       <div id="top">
         <%- include('noLoginMenu') %>
-        <h1 id="logo">(로고) E.B.S</h1>
+        <a href="/home">
+          <img src="views/image/logo.png" id="logo">
+        </a>
       </div>
       <%- include('menu') %>
     </div>
@@ -32,7 +34,7 @@
               </tr>
               <tr>
                 <td><label id="pwpw">비밀번호 확인</label></td>
-                <td><input type="password" name="pwre" id="pw"></td>
+                <td><input type="password" name="pwre" id="pwre"></td>
               </tr>
               <tr>
                 <td><label id="name">이름</label></td>
@@ -40,11 +42,11 @@
               </tr>
               <tr>
                 <td><label id="name">분류</label></td>
-                <td><input type="radio" name="buyer" id="buyer"><label id="class">구매자<input type="radio" name="prov" id="prov">공급자</td>
+                <td><input type="checkbox" name="provider" value="buyer" id="buyer" onclick='checkOnlyOne(this)'><label id="class">구매자<input type="checkbox" name="provider" value="prov" id="prov" onclick='checkOnlyOne(this)'>공급자</td>
               </tr>
               <tr>
                 <td><label id="name">개인정보제공동의</td>
-                <td><input type="radio" name="ch" id="ch"><label id="che">동의합니다.</td>
+                <td><input type="checkbox" name="ch" id="ch" ><label id="che">동의합니다.</td>
               </tr>
             </tbody>
           </table>
@@ -58,5 +60,18 @@
       <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
     </div>
   </div>
+  <script type="text/javascript">
+    function checkOnlyOne(element) {
+
+      const checkboxes
+          = document.getElementsByName("provider");
+
+      checkboxes.forEach((cb) => {
+        cb.checked = false;
+      })
+
+      element.checked = true;
+    }
+  </script>
 </body>
 </html>

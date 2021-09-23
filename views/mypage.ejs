@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href = "views/style/ex.css">
+    <link rel="stylesheet" href = "views/style/mypage.css">
     <title>마이페이지</title>
 </head>
 <body>
@@ -11,12 +11,34 @@
     <div id="header">
       <div id="top">
         <%- include('noLoginMenu') %>
-        <h1 id="logo">(로고) E.B.S</h1>
+        <a href="/home">
+          <img src="views/image/logo.png" id="logo">
+        </a>
       </div>
       <%- include('menu') %>
     </div>
+    <div id="name">
+      <h2>회원정보</h2>
+    </div>
     <div id="main">
-        <p>마이페이지입니다.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>I  D</th>
+              <th>성명</th>
+              <th>공급자/구매자</th>
+              <th>가입일자</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><%= user_id %></td>
+                <td><%= name %></td>
+                <td><%= provider %></td>
+                <td><%= created_at %></td>
+              </tr>
+            </tbody>
+        </table>
     </div>
     <div id="bottom">
       <hr>

@@ -11,13 +11,61 @@
     <div id="header">
       <div id="top">
         <%- include('noLoginMenu') %>
-        <h1 id="logo">(로고) E.B.S</h1>
+        <a href="/home">
+          <img src="views/image/logo.png" id="logo">
+        </a>
       </div>
       <%- include('menu') %>
     </div>
     <div id="main">
-        <div id="pic">
+      <div class="section">
+        <input type="radio" name="slide" id="slide01" checked>
+        <input type="radio" name="slide" id="slide02">
+        <input type="radio" name="slide" id="slide03">
+        <input type="radio" name="slide" id="slide04">
+        <div class="slidewrap">
+          <ul class="slidelist">
+            <li>
+              <a>
+                <img src="views/image/main1.png">
+              </a>
+            </li>
+            <li>
+              <a>
+                <img src="views/image/main2.png">
+              </a>
+            </li>
+            <li>
+              <a>
+                <img src="views/image/main3.png">
+              </a>
+            </li>
+            <li>
+              <a>
+                <img src="views/image/main4.png">
+              </a>
+            </li>
+          </ul>
+          <div class="slide-control">
+            <div class="control01">
+              <label for="slide04" class="left"></label>
+              <label for="slide02" class="right"></label>
+            </div>
+            <div class="control02">
+              <label for="slide01" class="left"></label>
+              <label for="slide03" class="right"></label>
+            </div>
+            <div class="control03">
+              <label for="slide02" class="left"></label>
+              <label for="slide04" class="right"></label>
+            </div>
+            <div class="control04">
+              <label for="slide03" class="left"></label>
+              <label for="slide01" class="right"></label>
+            </div>
+          </div>
         </div>
+      </div>
         <div id="po">
           <div id="notice">
             <ul>

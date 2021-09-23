@@ -10,7 +10,7 @@ a{text-decoration: none;}
 
 /* header */
 #top{padding-top: 100px;}
-#loginMenu{float: right; margin-top: 17px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
+#loginMenu{float: right; margin-top: 70px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
 #lo{margin-right: 20px;}
 #menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
   justify-content: space-around; background-color: #B4B4DC;
@@ -27,7 +27,7 @@ a{text-decoration: none;}
 #main h3{margin-top: 10px;}
 #tabel{margin: 0 auto; margin-top: 70px;}
 #id{height: 30px; width:300px; font-size: larger;}
-#pw, #name, #pwpw, #idid{height: 30px; width:300px; font-size: larger;}
+#pw, #name, #pwre, #idid{height: 30px; width:300px; font-size: larger;}
 #buyer, #prov{height: 16px; width:30px; font-size: larger; margin-top: 5px;}
 #ch{height: 16px; width: 30px; margin-top: 5px;}
 #class, #che{padding-right: 20px;}
