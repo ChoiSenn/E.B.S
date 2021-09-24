@@ -9,7 +9,7 @@ var crypto = require('crypto');
 var newDate = require('date-utils');
 var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
-var FileStore = require('session-file-store')(session);
+//var FileStore = require('session-file-store')(session);
 var cors = require('cors');
 var logger = require('morgan');
 var fs = require('fs');
@@ -91,7 +91,7 @@ app.use(session({
   cookie: {
     expires: 60 * 60 * 24
   },
-  store: new FileStore()
+  store: new MySQLStore()
 }));
 
 //var loggedin = false;
@@ -129,6 +129,17 @@ app.get('/Q&A', function(req, res, next){
 app.get('/posting', function(req, res, next){
   res.render('posting.ejs');
   logging(now() + ' : 입찰공고 페이지에 접속하였습니다.');
+});
+
+// 공고 작성
+app.get('/postW', function(req, res, next){
+  if(req.session.loggedin == true){
+    res.render('postW.ejs');
+    logging(now() + ' : 공고 작성 페이지에 접속하였습니다.');
+  } else{
+    logging(now() + ' : 허가받지 않은 사용자가 공고 작성 페이지에 접속하였습니다.');
+    res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
+  }
 });
 
 // 개찰 결과

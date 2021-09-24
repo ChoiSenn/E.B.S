@@ -1,0 +1,54 @@
+@import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+/* 기본 설정 리셋 */
+*{margin: 0; padding: 0;}
+li{list-style: none;}
+a{text-decoration: none;}
+
+/* 전체 크기 설정 */
+#all{width: 1024px; margin: 0 auto;}
+
+/* header */
+#top{padding-top: 100px;}
+#loginMenu{float: right; margin-top: 70px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
+#lo{margin-right: 20px;}
+#menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
+  justify-content: space-around; background-color: #B4B4DC;
+  border-radius: 8px;}
+#menu a{font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+#menu a:link{color: #00008C;}
+#menu a:visited{color: #00008C;}
+#menu a:hover{color: #CECEF6;}
+
+/* 본문 */
+#main{font-family: 'Jeju Gothic', sans-serif; text-align: center;  margin-top: 70px;}
+#main p{text-align: center;}
+#main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
+  border-bottom: 3px solid black; width:150px; margin: 0 auto; margin-bottom: 70px;}
+#write{width: 1018px;
+  border-collapse: collapse; border-spacing: 0;}
+table{width:100%; border-collapse: collapse; border-spacing: 0;
+  border-style: solid; border-color: #3C5087; border-width: 4px;
+  }
+#n{height: 50px;}
+#c{height: 50px;}
+#t{height: 800px;}
+#f{height: 50px;}
+#tagn{width:20%;}
+#tagc{width:20%;}
+#tagt{width:20%;}
+#tagf{width:20%;}
+#title{width: 780px; height: 30px;}
+#category{width: 780px; height: 30px;}
+#content{width: 780px; height: 760px;}
+#file{width: 780px;}
+#submit{margin-top: 80px; width: 100px; height: 50px;
+  font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+td{font-family: 'Jeju Gothic', sans-serif; font-size: x-large;
+  border: 2px solid #3C5087; border-radius: 4px;}
+input{font-size: 24px; font-family: 'Jeju Gothic', sans-serif;}
+textarea{font-size: 24px; font-family: 'Jeju Gothic', sans-serif;}
+
+/* bottom */
+#bottom{margin-top: 80px;}
+#bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}

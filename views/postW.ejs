@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href = "views/style/postW.css">
+    <title>공고 작성</title>
+</head>
+<body>
+  <div id="all">
+    <div id="header">
+      <div id="top">
+        <%- include('noLoginMenu') %>
+        <a href="/home">
+          <img src="views/image/logo.png" id="logo">
+        </a>
+      </div>
+      <%- include('menu') %>
+    </div>
+    <div id="main">
+      <h2>공고 작성</h2>
+        <form id="write" method="post">
+          <table>
+            <tr id="n">
+                <td id="tagn">제목</td>
+                <td><input type="text" name="title" id="title" required/></td>
+            </tr>
+            <tr id="c">
+                <td id="tagc">분류</td>
+                <td><input type="text" name="category" id="category" required/></td>
+            </tr>
+            <tr id="t">
+                <td id="tagt">내용</td>
+                <td><textarea name="content" id="content" required></textarea></td>
+            </tr>
+            <tr id="f">
+                <td id="tagf">파일</td>
+                <td><input type="file" name="file" id="file" required/></td>
+            </tr>
+          </table>
+          <button type="submit" id="submit">글쓰기</button>
+        </form>
+    </div>
+    <div id="bottom">
+      <hr>
+      <br>
+      <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
+    </div>
+  </div>
+</body>
+</html>
