@@ -8,8 +8,8 @@ var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var newDate = require('date-utils');
 var session = require('express-session');
-var MySQLStore = require('express-mysql-session')(session);
-//var FileStore = require('session-file-store')(session);
+//var MySQLStore = require('express-mysql-session')(session);
+var FileStore = require('session-file-store')(session);
 var cors = require('cors');
 var logger = require('morgan');
 var fs = require('fs');
@@ -46,7 +46,7 @@ function logging(logstr){
 try{
   var client = mysql.createConnection({
     host: 'localhost',
-    port: 3333,
+    port: 3306,
     user: 'root',
     password: '123456',
     database: 'ebs'
@@ -56,9 +56,11 @@ try{
   console.log(e.message);
 }
 client.connect((err) => {
-  if(err) throw err;
+  if(err) {
+    throw err;
+  }else{
   logging('DBMS Connected !!');
-
+}
   // user/post 테이블 없으면 생성 코드 차후 추가
 });
 
@@ -87,11 +89,11 @@ app.use(session({
   key: 'loginData',
   secret: 'secret',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
     expires: 60 * 60 * 24
   },
-  store: new MySQLStore()
+  store: new FileStore()
 }));
 
 //var loggedin = false;
@@ -164,7 +166,7 @@ app.get('/logout', function(request, response, next){
 // 로그인
 app.get('/login', function(req, res, next){
   res.render('login.ejs');
-  logging(now() +  ' : ' +passed);
+  logging(now() +  ' : ' +req.session.loggedin);
   logging(now() + ' : 로그인 페이지에 접속하였습니다.');
 });
 
@@ -178,39 +180,45 @@ app.get('/signUp', function(req, res, next){
 app.get('/mypage', function(req, res, next){
   logging(now() + ' : ' + req.session.loggedin);
   if(req.session.loggedin == true){
-    for (variable in loginid){
-      var logvalue = JSON.stringify(loginid[variable]);
-    }
-    var logg = logvalue.substring(6, logvalue.length-1);
-    logging(logg);
-    var sql = 'SELECT * FROM user';
-    client.query(sql, function (err, results, fields) {
-      if(err){
-        logging(now() + ' : 데이터베이스 발생.');
-        response.send("<script>alert('데이터베이스 오류');location.href='/login';</script>");
-      } else{
-        for(let i = 0; i < results.length; i++){
-          if(results[i].id == logg){
-            var user_id = results[i].user_id;
-            var name = results[i].name;
-            var provider = results[i].provider;
-            var created_at = results[i].created_at;
-          }
-          if(provider == 1){
-            provider = '공급자';
-          }else{
-            provider = '구매자';
-          }
-        }
-        res.render('mypage.ejs',{
-          user_id: user_id,
-          name: name,
-          provider: provider,
-          created_at: created_at
-        });
+    //for (variable in loginid){
+    //  var logvalue = JSON.stringify(loginid[variable]);
+    //}
+    //var logg = logvalue.substring(6, logvalue.length-1);
+    //logging(logg);
+    //var sql = 'SELECT * FROM user';
+    //client.query(sql, function (err, results, fields) {
+      //if(err){
+        //logging(now() + ' : 데이터베이스 발생.');
+        //response.send("<script>alert('데이터베이스 오류');location.href='/login';</script>");
+      //} else{
+        //for(let i = 0; i < results.length; i++){
+          //if(results[i].id == logg){
+            //var user_id = results[i].user_id;
+            //var name = results[i].name;
+            //var provider = results[i].provider;
+            //var created_at = results[i].created_at;
+          //}
+          //if(provider == 1){
+            //provider = '공급자';
+          //}else{
+            //provider = '구매자';
+          //}
+          res.render('mypage.ejs',{
+            user_id: req.session.userid,
+            name: req.session.name,
+            provider: req.session.prov,
+            created_at: req.session.date
+          });
+
+
+        //res.render('mypage.ejs',{
+          //user_id: user_id,
+          //name: name,
+          //provider: provider,
+          //created_at: created_at
+        //});
         logging(now() + ' : 마이페이지에 접속하였습니다.');
-      }
-    });
+
   } else{
     logging(now() + ' : 허가받지 않은 사용자가 마이페이지에 접속하였습니다.');
     res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
@@ -232,14 +240,20 @@ app.post('/login', function(request, response){
 
   // 사용자 id가 존재하는지 확인
   var sql = 'SELECT * FROM user WHERE user_id = ?';
-  client.query(sql, [id], (err, results, fields) => {
+  client.query(sql, [id], (err, data) => {
+    var id = data[0].user_id;
+    logging('1 '+data[0].user_id);
+    logging('2 '+id);
+    var name = data[0].name;
+    var prov = data[0].provider;
+    var date = data[0].created_at;
     if (err) {
       logging(now() + ' : 로그인 오류 발생.');
       response.send("<script>alert('오류');location.href='/login';</script>");
     }
 
     // 동일한 id가 있는지 확인
-    if (results.length === 0) {
+    else if (data.length === 0) {
       logging(now() + ' : ID가 다릅니다. 로그인 실패!');
       response.send("<script>alert('ID 혹은 암호가 다릅니다!');location.href='/login';</script>");
     }else{
@@ -249,7 +263,7 @@ app.post('/login', function(request, response){
           // var encryption = pd
           // 패스워드 일치 여부 확인
           sql = 'SELECT STRCMP(?, ?) AS COMPARE';
-          var pwCompare = [encryption, results[0].password]
+          var pwCompare = [encryption, data[0].password]
           client.query(sql, pwCompare, function (err, result, fields) {
             if (err) {
               logging(now() + ' : 로그인 오류 발생.');
@@ -257,33 +271,25 @@ app.post('/login', function(request, response){
             }
 
             // 패스워드가 불일치 한다면 실패
-            if (result[0].COMPARE !== 0) {
+            else if (result[0].COMPARE !== 0) {
               logging(now() + ' : 암호가 다릅니다. 로그인 실패!');
               response.send("<script>alert('ID 혹은 암호가 다릅니다!');location.href='/login';</script>");
             } else{
               // 패스워드 일치 성공 시 세션에 로그인 성공 저장
-              sqlid = 'SELECT id FROM USER WHERE user_id = ?';
-              client.query(sqlid, [id], (err, resul, fields) => {
-                if(err){
-                  logging(now() + ' : DB 오류 발생.');
-                  response.send("<script>alert('DB 오류');location.href='/login';</script>");
-                }else{
-                  logging(now() + ' : 로그인 : ' + resul);
-                  request.session.loggedin = true;
-                  loginid = resul;
-                  logging(now() + ' : 로그인 성공 : ' + JSON.stringify(loginid));
-                  logging(now() + ' : 로그인 성공 : ' + loginid);
-                  // logging(now() + ' : ' +JSON.stringify(resul));
-                  logging(now() + ' : 로그인 하였습니다!');
-                  response.send("<script>alert('로그인 하였습니다!');location.href='/home';</script>");
-                }
-              });
-
-            }
-          });
-    }
+                logging(now() + ' : 로그인 하였습니다!');
+                request.session.loggedin = true;
+                request.session.userid = id;
+                request.session.name = name;
+                request.session.prov = prov;
+                request.session.date = date;
+                logging('3 '+id);
+                logging('4 '+request.session.userid);
+                response.send("<script>alert('로그인 하였습니다!');location.href='/home';</script>");
+              }
+            });
+          }
+        });
   });
-});
 
 // 회원가입
 app.post('/signup', function(request, response){
@@ -310,7 +316,7 @@ app.post('/signup', function(request, response){
   } else { // 위 다 만족하면 DB 확인 진행
     client.query(idcheck, [id], (err, results, fields) => {
       if(err){
-        logging(now() + ' : 회원가입 DB 오류!');
+        logging(now() + ' : 회원가입 DB 오류! 1' + err);
         response.send("<script>alert('오류');location.href='/signup';</script>");
       } else if(results.length === 1){ // 이미 같은 id로 회원이 존재한다면
         logging(now() + ' : 중복 ID로 회원가입 시도하여 실패!');
@@ -329,7 +335,7 @@ app.post('/signup', function(request, response){
         signupsql = 'INSERT INTO user (user_id, password, name, provider, created_at) VALUES (?, ?, ?, ?, ?)';
         client.query(signupsql, [id, encryption, name, provider, time], function(err, result, fields){
           if (err){
-            logging(now() + ' : 회원가입 DB 오류!');
+            logging(now() + ' : 회원가입 DB 오류! 2');
             response.send("<script>alert('오류');location.href='/signup';</script>");
           } else{
             logging(now() + ' : 회원가입 성공!');
@@ -339,6 +345,24 @@ app.post('/signup', function(request, response){
       }
     });
   }
+});
+
+// 공고 작성
+app.post('/postW/write', function(req, res){
+  var title = req.body.title;
+  var category = req.body.category;
+  var content = req.body.content;
+
+  var datas = [req.session.name, now(), title, content, category]
+  var sql = 'INSERT INTO post(auth, date, title, content, category, count) VALUES(?, ?, ?, ?, ?, 0)';
+  client.query(sql, datas, function(err, result){
+    if(err){
+      logging(now() + ' : 공고 작성 DB 오류!');
+      res.send("<script>alert('오류');location.href='/postW';</script>");
+    } else{
+      res.redirect('/posting');
+    }
+  });
 });
 
 
@@ -371,5 +395,7 @@ var http = require('http').Server(app);
 http.listen(80, function(){
   console.log('server Running!! >> http://localhost:80');
 });
+
+//client.end();
 
 module.exports = app;
