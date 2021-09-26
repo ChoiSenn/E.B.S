@@ -14,6 +14,9 @@ var cors = require('cors');
 var logger = require('morgan');
 var fs = require('fs');
 var mysql = require('mysql');
+var multer = require('multer');
+var path = require('path');
+var static = require('serve-static');
 
 var passed = false; // 로그인 비활성화 기본 상태
 
@@ -80,6 +83,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/')));
+app.use('/files', static(path.join(__dirname, 'files')));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cors({
   origin: true,
@@ -99,10 +103,32 @@ app.use(session({
 //var loggedin = false;
 var loginid = -1;
 
+// 파일 경로 저장
+var storage = multer.diskStorage({
+    destination: function (req, file, callback){
+        callback(null, 'files/')
+    },
+    filename: function (req, file, callback){
+        callback(null, file.originalname + '-' + Date.now())
+    }
+});
+
+var upload = multer({
+  storage: storage
+});
+
+app.get('/test', function(req, res, next){
+  res.render('test.ejs');
+});
+
+
+
 //app.use('/', indexRouter);
 //app.use('/users', usersRouter);
 
 // 라우팅
+
+
 
 // 홈페이지
 app.get('/', function(req, res, next){
@@ -347,14 +373,31 @@ app.post('/signup', function(request, response){
   }
 });
 
+app.post('/test', upload.single('file'), (req, res)=>{
+    var file = `/files/${req.file.filename}`;
+
+    var datas = [file];
+    var sql = 'INSERT INTO test(file) VALUES(?)';
+    client.query(sql, datas, function(err, result){
+      if(err){
+        logging(now() + ' : 공고 작성 DB 오류!');
+      } else{
+        res.redirect('/');
+      }
+    });
+
+});
+
 // 공고 작성
-app.post('/postW/write', function(req, res){
+app.post('/postW/write', upload.single('file'), (req, res)=>{
+
   var title = req.body.title;
   var category = req.body.category;
   var content = req.body.content;
+  var file = `/files/${req.file.filename}`;
 
-  var datas = [req.session.name, now(), title, content, category]
-  var sql = 'INSERT INTO post(auth, date, title, content, category, count) VALUES(?, ?, ?, ?, ?, 0)';
+  var datas = [req.session.name, now(), title, content, category, file];
+  var sql = 'INSERT INTO post(auth, date, title, content, category, count, file) VALUES(?, ?, ?, ?, ?, 0, ?)';
   client.query(sql, datas, function(err, result){
     if(err){
       logging(now() + ' : 공고 작성 DB 오류!');
