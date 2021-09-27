@@ -104,3 +104,5 @@
 2021.09.25 - 로그인 시 mysql 오류가 계속 나길래 최근 포트번호와 비밀번호를 변경한게 문제인가, 해서 1시간 반 동안 env 파일을 건드려야 하나, installer로 재설정도 해보고 헤멨는데 session 문제였다. FileStore를 MySQLStore로 변경하는 과정에서 문제가 있었던듯... 시간 엄청 썼다 괴롭다. + response와 res, request와 req를 너무 혼용해놔서 오류가 자주 뜬다. 내일 전부 통일하기로 함.
 
 2021.09.26 - 파일 경로를 DB에 저장시키려고 하고 있는데 ejs 파일에 enctype="multipart/form-data"를 빼먹은 것을 js파일에서만 해메느라 40분 소요.
+
+2021.09.27 - DB에 시간을 YYYY-MM-DD HH24:MI:SS 형식으로 잘 저장하였으나 node로 가져올 시 다른 형태로 출력된다. js의 DB 연결 코드에 'dateStrings: 'date' 추가하여 해결.
