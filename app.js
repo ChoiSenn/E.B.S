@@ -29,12 +29,7 @@ function encryptionPW(pw) { // 비밀번호 암호화
 
 function now() {  // 지금 시간 추출
   var currentdate = new Date();
-  var now = currentdate.getFullYear() + "-"
-    + Number(currentdate.getMonth() + 1) + "-"
-    + currentdate.getDate() + " "
-    + currentdate.getHours() + ":"
-    + currentdate.getMinutes() + ":"
-    + currentdate.getSeconds();
+  var now = currentdate.toFormat('YYYY-MM-DD HH24:MI:SS');
   return now;
 }
 
@@ -52,7 +47,8 @@ try{
     port: 3306,
     user: 'root',
     password: '123456',
-    database: 'ebs'
+    database: 'ebs',
+    dateStrings: 'date'
   });
 } catch(e){
   console.log(e.name);
@@ -95,8 +91,9 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    expires: 60 * 60 * 24
+    // maxAge: 1000 * 60 * 2
   },
+  rolling: true,
   store: new FileStore()
 }));
 
@@ -155,8 +152,20 @@ app.get('/Q&A', function(req, res, next){
 
 // 입찰 공고
 app.get('/posting', function(req, res, next){
-  res.render('posting.ejs');
-  logging(now() + ' : 입찰공고 페이지에 접속하였습니다.');
+
+  var sql = 'SELECT * FROM post';
+  client.query(sql, (err, result, fields) => {
+    if(err){
+      logging(now() + ' : DB 오류 발생.');
+      response.send("<script>alert('오류');location.href='/home';</script>");
+    } else{
+      logging(result[0].title);
+      res.render('posting.ejs', {
+        result: result
+      });
+      logging(now() + ' : 입찰공고 페이지에 접속하였습니다.');
+    }
+  });
 });
 
 // 공고 작성
@@ -395,17 +404,23 @@ app.post('/postW/write', upload.single('file'), (req, res)=>{
   var category = req.body.category;
   var content = req.body.content;
   var file = `/files/${req.file.filename}`;
+  var deadline = req.body.date + ' ' + req.body.time+':00';
 
-  var datas = [req.session.name, now(), title, content, category, file];
-  var sql = 'INSERT INTO post(auth, date, title, content, category, count, file) VALUES(?, ?, ?, ?, ?, 0, ?)';
-  client.query(sql, datas, function(err, result){
-    if(err){
-      logging(now() + ' : 공고 작성 DB 오류!');
-      res.send("<script>alert('오류');location.href='/postW';</script>");
-    } else{
-      res.redirect('/posting');
-    }
-  });
+  if(deadline < now()){
+    logging(now() + ' : 날짜 입력 오류!');
+    res.send("<script>alert('잘못된 개찰일 설정입니다.');location.href='/postW';</script>");
+  }else{
+    var datas = [req.session.name, now(), title, content, category, file, deadline];
+    var sql = 'INSERT INTO post(auth, date, title, content, category, count, file, deadline) VALUES(?, ?, ?, ?, ?, 0, ?, ?)';
+    client.query(sql, datas, function(err, result){
+      if(err){
+        logging(now() + ' : 공고 작성 DB 오류!');
+        res.send("<script>alert('오류');location.href='/postW';</script>");
+      } else{
+        res.redirect('/posting');
+      }
+    });
+  }
 });
 
 

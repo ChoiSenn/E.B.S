@@ -27,7 +27,16 @@ a{text-decoration: none;}
 #men{background-color: skyblue; height: 600px; width: 180px; float: left;}
 #posting{background-color: purple; height: 60px; margin-bottom: 10px;}
 #cate{background-color: blue; height: 520px;}
-#posts{background-color: grey; width: 834px; height: 1000px; float: right;}
+#posts{background-color: grey; width: 834px; float: right;}
+#post{background-color: white; width: 814px; height: 100px;
+  margin: 10px;}
+#t{margin-left: 10px; display: block;}
+#title{float: left; font-size: 30px; font-weight: bolder; margin-top: 10px;}
+#category{float: left; font-size: 24px; margin-top: 16px; margin-left: 20px;}
+#count{float: right; font-size: 20px; margin-top: 18px; color: grey; margin-right: 10px;}
+#a{display: block; float: left; width: 814px; margin-left: 10px; margin-top: 14px;}
+#auth, #date{float: left; font-size: 20px;}
+#date{float: right; margin-right: 20px;}
 
 /* bottom */
 #bottom{margin-top: 40px; float: right; width: 1024px;}

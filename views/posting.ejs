@@ -28,7 +28,22 @@
         </div>
       </div>
       <div id="posts">
-
+        <%
+        for(var i = 0; i < result.length; i++){
+          var data = result[i];
+        %>
+          <div id="post">
+            <div id="t">
+              <p id="title"><%= data.title %></p>
+              <p id="category"><%= data.category %></p>
+              <p id="count">view <%= data.count %></p>
+            </div>
+            <div id="a">
+              <p id="auth"><%= data.auth %></p>
+              <p id="date"><%= data.date %> ~ <%= data.deadline %></p>
+            </div>
+          </div>
+        <% } %>
       </div>
     </div>
     <div id="bottom">
