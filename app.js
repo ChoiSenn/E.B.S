@@ -17,6 +17,7 @@ var mysql = require('mysql');
 var multer = require('multer');
 var path = require('path');
 var static = require('serve-static');
+var mime = require('mime');
 
 var passed = false; // 로그인 비활성화 기본 상태
 
@@ -65,6 +66,7 @@ client.connect((err) => {
 
 // 서버 생성
 var app = express();
+var router = express.Router();
 // 서버 환셩 설정
 app.settings.env = 'production';
 
@@ -102,20 +104,16 @@ var loginid = -1;
 
 // 파일 경로 저장
 var storage = multer.diskStorage({
-    destination: function (req, file, callback){
-        callback(null, 'files/')
+    destination: function (req, file, cb){
+        cb(null, 'files/')
     },
-    filename: function (req, file, callback){
-        callback(null, file.originalname + '-' + Date.now())
+    filename: function (req, file, cb){
+        cb(null, Date.now() + '-' + file.originalname)
     }
 });
 
 var upload = multer({
   storage: storage
-});
-
-app.get('/test', function(req, res, next){
-  res.render('test.ejs');
 });
 
 
@@ -159,13 +157,58 @@ app.get('/posting', function(req, res, next){
       logging(now() + ' : DB 오류 발생.');
       response.send("<script>alert('오류');location.href='/home';</script>");
     } else{
-      logging(result[0].title);
       res.render('posting.ejs', {
         result: result
       });
       logging(now() + ' : 입찰공고 페이지에 접속하였습니다.');
     }
   });
+});
+
+app.get('/post/:id', function(req, res, next){
+  var id = req.params.id;
+
+  var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
+  client.query(sql, [id], function(err, row){
+    if(err){
+      logging(now() + ' : 글 렌더링 오류!');
+      res.send("<script>alert('오류');location.href='/home';</script>");
+    }else{
+      f = row[0].file;
+      fi = f.split('/');
+      file = fi[2];
+      res.render('post', {title: '글 상세', row: row[0], file: file});
+    }
+  });
+});
+
+// 파일 다운로드
+app.get('/download/:file_name', function(req, res, next) {
+  var upload_folder = 'files/';
+  var file = upload_folder + req.params.file_name; // ex) /upload/files/sample.txt
+
+  try {
+    if (fs.existsSync(file)) { // 파일이 존재하는지 체크
+      logging('1');
+      var filename = path.basename(file); // 파일 경로에서 파일명(확장자포함)만 추출
+      var mimetype = mime.lookup(file); // 파일의 타입(형식)을 가져옴
+
+      res.setHeader('Content-disposition', 'attachment; filename=' + filename); // 다운받아질 파일명 설정
+      res.setHeader('Content-type', mimetype); // 파일 형식 지정
+      logging('2');
+
+      var filestream = fs.createReadStream(file);
+      logging('3');
+      filestream.pipe(res);
+    } else {
+      res.send('해당 파일이 없습니다.');
+      return;
+    }
+  } catch (e) { // 에러 발생시
+    console.log(e);
+    res.send('파일을 다운로드하는 중에 에러가 발생하였습니다.');
+    return;
+  }
 });
 
 // 공고 작성
@@ -380,21 +423,6 @@ app.post('/signup', function(request, response){
       }
     });
   }
-});
-
-app.post('/test', upload.single('file'), (req, res)=>{
-    var file = `/files/${req.file.filename}`;
-
-    var datas = [file];
-    var sql = 'INSERT INTO test(file) VALUES(?)';
-    client.query(sql, datas, function(err, result){
-      if(err){
-        logging(now() + ' : 공고 작성 DB 오류!');
-      } else{
-        res.redirect('/');
-      }
-    });
-
 });
 
 // 공고 작성

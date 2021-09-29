@@ -1,0 +1,28 @@
+@import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+/* 기본 설정 리셋 */
+*{margin: 0; padding: 0;}
+li{list-style: none;}
+a{text-decoration: none;}
+
+/* 전체 크기 설정 */
+#all{width: 1024px; margin: 0 auto;}
+
+/* header */
+#top{padding-top: 100px;}
+#loginMenu{float: right; margin-top: 70px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
+#lo{margin-right: 20px;}
+#menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
+  justify-content: space-around; background-color: #B4B4DC;
+  border-radius: 8px;}
+#menu a{font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+#menu a:link{color: #00008C;}
+#menu a:visited{color: #00008C;}
+#menu a:hover{color: #CECEF6;}
+
+/* 본문 */
+#main{padding-top: 300px; padding-bottom: 300px;}
+#main p{text-align: center;}
+
+/* bottom */
+#bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}

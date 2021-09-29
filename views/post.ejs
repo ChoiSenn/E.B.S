@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>글 상세</title>
+</head>
+<body>
+  <div id="all">
+    <div id="header">
+      <div id="top">
+        <%- include('noLoginMenu') %>
+        <a href="/home">
+          <img src="/views/image/logo.png" id="logo">
+        </a>
+      </div>
+      <%- include('menu') %>
+    </div>
+    <div id="main">
+        <h2 id='title'><%= row.title %></h2>
+        <h3 id = 'cate'><%= row.category %></h3>
+        <div id="bu">
+          <p id='auth'><%= row.auth %></p>
+          <p id= 'date'><%= row.date %></p>
+          <p id='count'><%= row.count %></p>
+        </div>
+        <p id='content'><%= row.content %></p>
+        <p id='deadline'>마감기한 : <%= row.deadline %></p>
+        <p id='a'>(자세한 설명은 첨부파일을 확인하여주세요.)</p>
+        <a href="/download/<%= file %>"><p><%= file %></p></a>
+    </div>
+    <div id="bottom">
+      <hr>
+      <br>
+      <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
+    </div>
+  </div>
+</body>
+<style media="screen">
+  @import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+  /* 기본 설정 리셋 */
+  *{margin: 0; padding: 0;}
+  li{list-style: none;}
+  a{text-decoration: none;}
+
+  /* 전체 크기 설정 */
+  #all{width: 1024px; margin: 0 auto;}
+
+  /* header */
+  #top{padding-top: 100px;}
+  #loginMenu{margin-top: 70px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;float:right;}
+  #lo{margin-right: 20px;}
+  #menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
+    justify-content: space-around; background-color: #B4B4DC;
+    border-radius: 8px;}
+  #menu a{font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+  #menu a:link{color: #00008C;}
+  #menu a:visited{color: #00008C;}
+  #menu a:hover{color: #CECEF6;}
+
+  /* 본문 */
+  #main{padding-top: 30px; padding-bottom: 30px; width:100%;}
+  #main p{text-align: center;}
+  #title{font-size: 40px; text-align:center; font-weight:bold;}
+  #cate{text-align:center; font-size: 26px; font-weight: bold;}
+  #bu{margin-top: 30px; width: 500px; height: 50px; margin: 0 auto; margin-bottom: 20px; margin-top: 10px;}
+  #auth{float:left;}
+  #date, #count{float: right;}
+  #content{margin-bottom: 50px; font-size: 26px; width: 100%; border: 1px solid red;}
+  #deadline{font-size: 20px; font-weight: bold;}
+
+  /* bottom */
+  #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}
+
+</style>
+</html>
