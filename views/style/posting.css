@@ -10,7 +10,7 @@ a{text-decoration: none;}
 
 /* header */
 #top{padding-top: 100px;}
-#loginMenu{float: right; margin-top: 70px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
+#loginMenu{float: right; margin-top: 110px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
 #lo{margin-right: 20px;}
 #menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
   justify-content: space-around; background-color: #B4B4DC;
@@ -23,15 +23,28 @@ a{text-decoration: none;}
 /* 본문 */
 #main{font-family: 'Jeju Gothic', sans-serif; text-align: center; margin-top: 10px;}
 #main p{text-align: center;}
-#search{height: 120px; background-color: pink; margin-bottom: 10px;}
+#search{height: 120px; background-color: #dcdcdc; margin-bottom: 10px; border-radius: 8px;}
+#search h2{font-size: 30px; padding-top: 25px;float: left; padding-left: 60px; margin-right: 80px;}
+#sear{padding-top: 16px;}
+#sear p, #sear input{float: left;}
+#sear input{margin-right: 40px; margin-top: 4px;}
+#sear p{margin-right: 10px;}
+#searc{float: left; margin-top: 10px;}
+#searc p, #searc input{float: left;}
+#searc input{margin-right: 46px; margin-top: 4px;}
+#searc p{margin-right: 10px; margin-top: 2px;}
+#sear p, #searc p{font-size: 20px;}
+#searchb{font-size: 24px; margin-top: 8px;}
+#searchbutton{font-size: 20px; margin-top: 8px; font-weight: bolder;}
+
 #men{background-color: skyblue; height: 600px; width: 180px; float: left;}
 #posting{background-color: purple; height: 60px; margin-bottom: 10px;}
 #cate{background-color: blue; height: 520px;}
-#posts{background-color: grey; width: 834px; float: right;}
+#posts{background-color: grey; width: 834px; float: right; border-radius: 8px;}
 #post{background-color: white; width: 814px; height: 100px;
-  margin: 10px;}
+  margin: 10px; border-radius: 8px;}
 #t{margin-left: 10px; display: block;}
-#title{float: left; font-size: 30px; font-weight: bolder; margin-top: 10px;}
+#title{float: left; font-size: 30px; font-weight: bolder; margin-top: 10px; color: black;}
 #category{float: left; font-size: 24px; margin-top: 16px; margin-left: 20px;}
 #count{float: right; font-size: 20px; margin-top: 18px; color: grey; margin-right: 10px;}
 #a{display: block; float: left; width: 814px; margin-left: 10px; margin-top: 14px;}

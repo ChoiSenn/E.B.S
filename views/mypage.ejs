@@ -39,6 +39,23 @@
               </tr>
             </tbody>
         </table>
+        <div id="posts">
+          <%
+          for(var i = 0; i < result.length; i++){
+              var data = result[i];
+          %>
+            <div id="post">
+              <div id="t">
+                <a href="/edit/<%= data.id %>"><p id="title"><%= data.title %></p></a>
+                <p id="category">(<%= data.category %>)</p>
+                <p id="count">view <%= data.count %></p>
+              </div>
+              <div id="a">
+                <p id="auth"><%= data.auth %></p>
+                <p id="date"><%= data.date %> ~ <%= data.deadline %></p>
+              </div>
+            </div>
+          <% } %>
     </div>
     <div id="bottom">
       <hr>

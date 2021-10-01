@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href = "views/style/posting.css">
     <title>입찰공고</title>
 </head>
 <body>
@@ -12,30 +11,63 @@
       <div id="top">
         <%- include('noLoginMenu') %>
         <a href="/home">
-          <img src="views/image/logo.png" id="logo">
+          <img src="/views/image/logo.png" id="logo">
         </a>
       </div>
       <%- include('menu') %>
     </div>
     <div id="main">
-      <div id="search">
-
-      </div>
-      <div id="men">
-        <div id="posting"><a href="/postW"><h3>공고 작성하기</h3></a></div>
-        <div id="cate">
-
+      <form action="<%page%>" method="get">
+        <div id="search">
+          <h2>검색</h2>
+          <div id="sear">
+            <p>작성일 최신순</p>
+            <input type="radio" name="day" value="day_recent" checked='checked'/>
+            <p>작성일 오래된순</p>
+            <input type="radio" name="day" value="day_latest"/>
+            <p>마감일 임박순</p>
+            <input type="radio" name="day" value="dead_recent"/>
+            <p>마감일 늦은순</p>
+            <input type="radio" name="day" value="dead_latest"/>
+          </div>
+          <div id="searc">
+            <p>전체</p>
+            <input type="radio" name="category" value="all" checked='checked'/>
+            <p>물품</p>
+            <input type="radio" name="category" value="stuff"/>
+            <p>공사</p>
+            <input type="radio" name="category" value="work"/>
+            <p>용역</p>
+            <input type="radio" name="category" value="service"/>
+            <p>외자</p>
+            <input type="radio" name="category" value="foreign"/>
+            <p>비축</p>
+            <input type="radio" name="category" value="reserve"/>
+            <p>기타</p>
+            <input type="radio" name="category" value="etc"/>
+          </div>
+          <div id='searchbox'>
+            <input type="text" name="searchb" placeholder="검색어를 입력하세요." id="searchb"/>
+            <input type="submit" name="search" id="searchbutton" value="검색"></button>
+          </div>
         </div>
-      </div>
+        </form>
+        <div id="posting">
+          <div id="po"><a href="/postW"><h3>공고 작성</h3></a></div>
+        </div>
       <div id="posts">
         <%
-        for(var i = 0; i < result.length; i++){
-          var data = result[i];
+        for(var i = (page * page_num) - page_num; i < (page * page_num); i++){
+          if(i > length){
+            i++;
+          }else{
+            var data = result[i];
+          }
         %>
           <div id="post">
             <div id="t">
               <a href="/post/<%= data.id %>"><p id="title"><%= data.title %></p></a>
-              <p id="category"><%= data.category %></p>
+              <p id="category">(<%= data.category %>)</p>
               <p id="count">view <%= data.count %></p>
             </div>
             <div id="a">
@@ -44,6 +76,11 @@
             </div>
           </div>
         <% } %>
+        <div id="page">
+          <% for(var j = 0; j < result.length / page_num; j++){  %>
+            [<a href="/posting/<%= j + 1 %>"><%= j + 1 %></a>]
+          <% } %>
+        </div>
       </div>
     </div>
     <div id="bottom">
@@ -53,4 +90,66 @@
     </div>
   </div>
 </body>
+<style media="screen">
+@import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+/* 기본 설정 리셋 */
+*{margin: 0; padding: 0;}
+li{list-style: none;}
+a{text-decoration: none;}
+
+/* 전체 크기 설정 */
+#all{width: 1024px; margin: 0 auto;}
+
+/* header */
+#top{padding-top: 100px;}
+#loginMenu{margin-top: 110px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;float:right;}
+#lo{margin-right: 20px;}
+#menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
+  justify-content: space-around; background-color: #B4B4DC;
+  border-radius: 8px;}
+#menu a{font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+#menu a:link{color: #00008C;}
+#menu a:visited{color: #00008C;}
+#menu a:hover{color: #CECEF6;}
+
+/* 본문 */
+#main{font-family: 'Jeju Gothic', sans-serif; text-align: center; margin-top: 10px;}
+#main p{text-align: center;}
+#search{height: 120px; background-color: #dcdcdc; margin-bottom: 10px; border-radius: 8px;}
+#search h2{font-size: 36px; padding-top: 40px; float: left; padding-left: 70px; margin-right: 70px;}
+#sear{padding-top: 16px;}
+#sear p, #sear input{float: left;}
+#sear input{margin-right: 40px; margin-top: 4px;}
+#sear p{margin-right: 10px;}
+#searc{float: left; margin-top: 10px;}
+#searc p, #searc input{float: left;}
+#searc input{margin-right: 46px; margin-top: 4px;}
+#searc p{margin-right: 10px; margin-top: 2px;}
+#sear p, #searc p{font-size: 20px;}
+#searchbox{margin-right: 180px;}
+#searchb{font-size: 24px; margin-top: 8px;}
+#searchbutton{font-size: 20px; margin-top: 8px; font-weight: bolder;}
+
+#posting{background-color: grey; height: 120px; margin-bottom: 10px; float: left; width: 180px; border-radius: 8px;}
+#po{background-color: lightgray; height: 100px; margin-bottom: 10px; width: 160px; border-radius: 8px; margin: 10px;}
+#po h3{padding: 30px; color: black; font-size: 25px; font-weight: bolder; width: auto; padding-top: 35px;}
+#posts{background-color: grey; width: 834px; float: right; border-radius: 8px;}
+#post{background-color: white; width: 814px; height: 100px;
+  margin: 10px; border-radius: 8px;}
+#t{margin-left: 10px; display: block;}
+#title{float: left; font-size: 30px; font-weight: bolder; margin-top: 10px; color: black;}
+#category{float: left; font-size: 24px; margin-top: 16px; margin-left: 20px;}
+#count{float: right; font-size: 20px; margin-top: 18px; color: grey; margin-right: 10px;}
+#a{display: block; float: left; width: 814px; margin-left: 10px; margin-top: 14px;}
+#auth, #date{float: left; font-size: 20px;}
+#date{float: right; margin-right: 20px;}
+#page{text-align: center; font-size: 30px; color: white; margin-bottom: 10px;}
+#page a{color: white;}
+
+/* bottom */
+#bottom{margin-top: 40px; float: right; width: 1024px;}
+#bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}
+
+</style>
 </html>

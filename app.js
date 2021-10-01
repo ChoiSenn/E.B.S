@@ -150,17 +150,92 @@ app.get('/Q&A', function(req, res, next){
 
 // 입찰 공고
 app.get('/posting', function(req, res, next){
+  res.redirect('/posting/1');
+  logging(now() + ' : 입찰공고 페이지에 접속하였습니다.');
+});
 
-  var sql = 'SELECT * FROM post';
-  client.query(sql, (err, result, fields) => {
+app.get('/posting/:page', function(req, res, next){
+  var page = req.params.page;
+  var order = ' ORDER BY';
+  var day = ' date';
+  var dead = ' deadline';
+  var latest = ' ASC';
+  var recent = ' DESC';
+
+  var searchquery = 'SELECT * FROM post WHERE (title LIKE ? OR content LIKE ?)';
+
+  if(req.query.category == 'stuff'){
+    searchquery = searchquery + " AND category='물품'";
+  } else if (req.query.category == 'work') {
+    searchquery = searchquery + " AND category='공사'";
+  } else if (req.query.category == 'service') {
+    searchquery = searchquery + " AND category='용역'";
+  } else if (req.query.category == 'foreign') {
+    searchquery = searchquery + " AND category='외자'";
+  } else if (req.query.category == 'reserve') {
+    searchquery = searchquery + " AND category='비축'";
+  } else if (req.query.category == 'etc') {
+    searchquery = searchquery + " AND category='기타'";
+  }
+
+  if(req.query.day == 'day_recent'){
+    searchquery = searchquery + order + day + recent;
+  } else if (req.query.day == 'dead_latest') {
+    searchquery = searchquery + order + dead + recent;
+  } else if (req.query.day == 'dead_recent') {
+    searchquery = searchquery + order + dead + latest;
+  }
+
+  if(req.query.searchb){
+    var search = req.query.searchb;
+    logging(searchquery);
+    client.query(searchquery, ['%'+search+'%', '%'+search+'%'], function(err, results){
+      if(err){
+        logging(now() + ' : DB 오류 발생.');
+        res.send("<script>alert('오류');location.href='/home';</script>");
+      } else{
+        res.render('posting.ejs', {
+          result: results,
+          page: page,
+          length: results.length-1,
+          page_num: 10
+        });
+      }
+    });
+  } else{
+    var sql = 'SELECT * FROM post ORDER BY date DESC';
+    client.query(sql, (err, result, fields) => {
+      if(err){
+        logging(now() + ' : DB 오류 발생.');
+        response.send("<script>alert('오류');location.href='/home';</script>");
+      } else{
+        res.render('posting.ejs', {
+          result: result,
+          page: page,
+          length: result.length-1,
+          page_num: 10
+        });
+        logging(now() + ' : 입찰공고 페이지에 접속하였습니다.');
+      }
+    });
+  }
+});
+
+app.get('/posting/search', function(req, res, next){
+  logging('접속');
+  var search = req.query.searchb;
+  logging(search);
+  var searchquery = 'SELECT * FROM post WHERE title LIKE ? OR content LIKE ? ORDER BY date DESC';
+
+  client.query(searchquery, ['%'+search+'%', '%'+search+'%'], function(err, results){
     if(err){
       logging(now() + ' : DB 오류 발생.');
       response.send("<script>alert('오류');location.href='/home';</script>");
     } else{
+      logging(results);
       res.render('posting.ejs', {
-        result: result
+        result: results
       });
-      logging(now() + ' : 입찰공고 페이지에 접속하였습니다.');
     }
   });
 });
@@ -168,16 +243,19 @@ app.get('/posting', function(req, res, next){
 app.get('/post/:id', function(req, res, next){
   var id = req.params.id;
 
-  var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
-  client.query(sql, [id], function(err, row){
+  var sqlcount = 'UPDATE post SET count=count+1 where id=?';
+  client.query(sqlcount, [id], function(err, result){
     if(err){
       logging(now() + ' : 글 렌더링 오류!');
       res.send("<script>alert('오류');location.href='/home';</script>");
     }else{
-      f = row[0].file;
-      fi = f.split('/');
-      file = fi[2];
-      res.render('post', {title: '글 상세', row: row[0], file: file});
+      var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
+      client.query(sql, [id], function(err, row){
+        f = row[0].file;
+        fi = f.split('/');
+        file = fi[2];
+        res.render('post', {title: '글 상세', row: row[0], file: file});
+      });
     }
   });
 });
@@ -258,49 +336,41 @@ app.get('/signUp', function(req, res, next){
 app.get('/mypage', function(req, res, next){
   logging(now() + ' : ' + req.session.loggedin);
   if(req.session.loggedin == true){
-    //for (variable in loginid){
-    //  var logvalue = JSON.stringify(loginid[variable]);
-    //}
-    //var logg = logvalue.substring(6, logvalue.length-1);
-    //logging(logg);
-    //var sql = 'SELECT * FROM user';
-    //client.query(sql, function (err, results, fields) {
-      //if(err){
-        //logging(now() + ' : 데이터베이스 발생.');
-        //response.send("<script>alert('데이터베이스 오류');location.href='/login';</script>");
-      //} else{
-        //for(let i = 0; i < results.length; i++){
-          //if(results[i].id == logg){
-            //var user_id = results[i].user_id;
-            //var name = results[i].name;
-            //var provider = results[i].provider;
-            //var created_at = results[i].created_at;
-          //}
-          //if(provider == 1){
-            //provider = '공급자';
-          //}else{
-            //provider = '구매자';
-          //}
-          res.render('mypage.ejs',{
-            user_id: req.session.userid,
-            name: req.session.name,
-            provider: req.session.prov,
-            created_at: req.session.date
-          });
-
-
-        //res.render('mypage.ejs',{
-          //user_id: user_id,
-          //name: name,
-          //provider: provider,
-          //created_at: created_at
-        //});
-        logging(now() + ' : 마이페이지에 접속하였습니다.');
-
+    var sql = 'SELECT * FROM post WHERE auth=? ORDER BY date DESC';
+    client.query(sql, [req.session.name], function(err, result){
+      res.render('mypage.ejs',{
+        user_id: req.session.userid,
+        name: req.session.name,
+        provider: req.session.prov,
+        created_at: req.session.date,
+        result: result
+      });
+    });
+    logging(now() + ' : 마이페이지에 접속하였습니다.');
   } else{
     logging(now() + ' : 허가받지 않은 사용자가 마이페이지에 접속하였습니다.');
     res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
   }
+});
+
+app.get('/edit/:id', function(req, res, next){
+  var id = req.params.id;
+
+  var sqlcount = 'UPDATE post SET count=count+1 where id=?';
+  client.query(sqlcount, [id], function(err, result){
+    if(err){
+      logging(now() + ' : 글 렌더링 오류!');
+      res.send("<script>alert('오류');location.href='/home';</script>");
+    }else{
+      var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
+      client.query(sql, [id], function(err, row){
+        f = row[0].file;
+        fi = f.split('/');
+        file = fi[2];
+        res.render('edit', {row: row[0], file: file});
+      });
+    }
+  });
 });
 
 //로그인 요청

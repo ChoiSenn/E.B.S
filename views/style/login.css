@@ -10,7 +10,7 @@ a{text-decoration: none;}
 
 /* header */
 #top{padding-top: 100px;}
-#loginMenu{float: right; margin-top: 70px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
+#loginMenu{float: right; margin-top: 110px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
 #lo{margin-right: 20px;}
 #menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
   justify-content: space-around; background-color: #B4B4DC;
