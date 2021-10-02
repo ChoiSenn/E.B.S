@@ -353,22 +353,47 @@ app.get('/mypage', function(req, res, next){
   }
 });
 
+app.get('/delete/:id', function(req, res, next){
+  var id = req.params.id;
+
+  var sql = 'DELETE FROM post WHERE id=?';
+  client.query(sql, [id], function(err, row){
+    logging(now() + ' : '+ id + '번 째 공고를 삭제하였습니다.');
+    res.send("<script>alert('공고를 삭제하였습니다!');location.href='/mypage';</script>");
+  });
+});
+
 app.get('/edit/:id', function(req, res, next){
   var id = req.params.id;
 
-  var sqlcount = 'UPDATE post SET count=count+1 where id=?';
-  client.query(sqlcount, [id], function(err, result){
+  var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
+  client.query(sql, [id], function(err, row){
+    f = row[0].file;
+    fi = f.split('/');
+    file = fi[2];
+    res.render('edit', {
+      row: row[0],
+      file: file
+    });
+  });
+});
+
+app.post('/edit/:id', upload.single('file'), (req, res) => {
+  logging('수정 페이지 접속');
+  var id = req.body.id;
+  var title = req.body.title;
+  var content = req.body.content;
+  var category = req.body.category;
+  var name = req.file.filename;
+  var file = `/files/${name}`;
+  var deadline = req.body.date + ' ' + req.body.time+':00';
+
+  client.query('UPDATE post SET date=?, title=?, content=?, category=?, file=?, deadline=? WHERE id=?', [now(), title, content, category, file, deadline, id], function(err, result){
     if(err){
-      logging(now() + ' : 글 렌더링 오류!');
-      res.send("<script>alert('오류');location.href='/home';</script>");
-    }else{
-      var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
-      client.query(sql, [id], function(err, row){
-        f = row[0].file;
-        fi = f.split('/');
-        file = fi[2];
-        res.render('edit', {row: row[0], file: file});
-      });
+      logging('오류');
+    } else{
+      logging(now() + ' : 글이 수정되었습니다.');
+      res.send("<script>location.href='/mypage';</script>");
     }
   });
 });

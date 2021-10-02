@@ -47,6 +47,8 @@ td{width: 806px; text-align: center; height: 30px;}
 #a{display: block; float: left; width: 814px; margin-left: 10px; margin-top: 14px;}
 #auth, #date{float: left; font-size: 20px;}
 #date{float: right; margin-right: 20px;}
+#delete{background-color: red; font-weight: bolder; color: white; width: 50px; height: 30px; border-radius: 8px; font-size: 20px;
+  float: left; margin-left: 20px; margin-top: 12px;}
 
 /* bottom */
 #bottom{margin-top: 40px; float: right; width: 1024px;}
