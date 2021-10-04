@@ -300,17 +300,6 @@ app.get('/postW', function(req, res, next){
   }
 });
 
-// 개찰 결과
-app.get('/bidOpen', function(req, res, next){
-  if(req.session.loggedin == true){
-    res.render('bidOpen.ejs');
-    logging(now() + ' : 개찰 결과 페이지에 접속하였습니다.');
-  } else{
-    logging(now() + ' : 허가받지 않은 사용자가 개찰 결과 페이지에 접속하였습니다.');
-    res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
-  }
-});
-
 // 로그아웃
 app.get('/logout', function(request, response, next){
   request.session.loggedin = false;
@@ -402,6 +391,54 @@ app.post('/edit/:id', upload.single('file'), (req, res) => {
 app.get('/plzlogin', function(req, res, next){
   res.render('plzlogin.ejs');
   logging(now() + ' : 로그인 하지 않은 사용자가 접속을 시도하였습니다..');
+});
+
+// 개찰 결과 등록 페이지
+app.get('/opening', function(req, res, next){
+  if(req.session.loggedin == true){
+    var sql = 'SELECT * FROM post WHERE auth=? AND deadline<? ORDER BY date DESC';
+    client.query(sql, [req.session.name, now()], function(err, result){
+      res.render('opening.ejs',{
+        result: result
+      });
+    });
+    logging(now() + ' : 개찰결과 등록 페이지에 접속하였습니다.');
+  } else{
+    logging(now() + ' : 허가받지 않은 사용자가 개찰 결과 등록 페이지에 접속하였습니다.');
+    res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
+  }
+});
+
+app.get('/open/:id', function(req, res, next){
+
+});
+
+// 개찰 결과 열람 페이지
+app.get('/bidOpen', function(req, res, next){
+  if(req.session.loggedin == true){
+    var sql = 'SELECT * FROM post WHERE auth=? AND deadline<? ORDER BY date DESC';
+    client.query(sql, [req.session.name, now()], function(err, result){
+      res.render('bidOpen.ejs',{
+        result: result
+      });
+    });
+    logging(now() + ' : 개찰결과 열람 페이지에 접속하였습니다.');
+  } else{
+    logging(now() + ' : 허가받지 않은 사용자가 개찰 열람 등록 페이지에 접속하였습니다.');
+    res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
+  }
+});
+
+app.get('/bid/:id', function(req, res, next){
+  var id = req.params.id;
+
+  if(req.session.loggedin == true){
+    res.render('bid.ejs');
+    logging(now() + ' : 입찰 등록 페이지에 접속하였습니다.');
+  } else{
+    logging(now() + ' : 허가받지 않은 사용자가 입찰 등록 페이지에 접속하였습니다.');
+    res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
+  }
 });
 
 // post

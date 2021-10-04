@@ -28,6 +28,7 @@
         <p id='deadline'>마감기한 : <%= row.deadline %></p>
         <p id='a'>(자세한 설명은 첨부파일을 확인하여주세요.)</p>
         <a href="/download/<%= file %>"><p><%= file %></p></a>
+        <a href="/bid/<%= row.id %>"><div id="bid">입찰 등록하기</div></a>
     </div>
     <div id="bottom">
       <hr>
@@ -68,10 +69,10 @@
   #auth{float:left;}
   #date{float: right;}
   #count{float: right;}
-
-
   #content{margin-bottom: 50px; font-size: 26px; width: 100%;}
   #deadline{font-size: 20px; font-weight: bold;}
+  #bid{width: 200px; height: 50px; font-size: 20px; font-weight: bolder; border-radius: 8px; margin: 0 auto; padding-top: 20px; margin-top: 50px;
+    background-color: lightgrey; color: black; padding-left: 70px; margin-bottom: 30px;}
 
   /* bottom */
   #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}

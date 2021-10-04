@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>글 상세</title>
+</head>
+<body>
+  <div id="all">
+    <div id="header">
+      <div id="top">
+        <%- include('noLoginMenu') %>
+        <a href="/home">
+          <img src="/views/image/logo.png" id="logo">
+        </a>
+      </div>
+      <%- include('menu') %>
+    </div>
+    <div id="main">
+        <h2>입찰 등록</h2>
+    </div>
+    <div id="bottom">
+      <hr>
+      <br>
+      <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
+    </div>
+  </div>
+</body>
+<style media="screen">
+  @import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+  /* 기본 설정 리셋 */
+  *{margin: 0; padding: 0;}
+  li{list-style: none;}
+  a{text-decoration: none;}
+
+  /* 전체 크기 설정 */
+  #all{width: 1024px; margin: 0 auto;}
+
+  /* header */
+  #top{padding-top: 100px;}
+  #loginMenu{margin-top: 110px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;float:right;}
+  #lo{margin-right: 20px;}
+  #menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
+    justify-content: space-around; background-color: #B4B4DC;
+    border-radius: 8px;}
+  #menu a{font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+  #menu a:link{color: #00008C;}
+  #menu a:visited{color: #00008C;}
+  #menu a:hover{color: #CECEF6;}
+
+  /* 본문 */
+  #main{margin-top: 70px; margin-bottom: 10px; font-family: 'Jeju Gothic', sans-serif; text-align: center;}
+  #main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
+    border-bottom: 3px solid black; width:150px; margin: 0 auto; margin-bottom: 70px;}
+
+  /* bottom */
+  #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}
+
+</style>
+</html>

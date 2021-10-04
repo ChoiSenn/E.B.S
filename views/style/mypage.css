@@ -37,6 +37,8 @@ th, td{display: block; font-size: x-large;
   padding: 30px 0;}
 th{width: 200px; height: 30px;}
 td{width: 806px; text-align: center; height: 30px;}
+#open{width: 180px; height: 40px; background-color: lightgrey; color: black; margin: 0 auto; font-size: 20px; font-weight: bolder;
+  margin-top: 30px; border-radius: 8px; padding-top: 20px;}
 #posts{background-color: grey; width: 834px; float: right; border-radius: 8px; margin-top: 30px; margin-right: 90px;}
 #post{background-color: white; width: 814px; height: 100px;
   margin: 10px; border-radius: 8px;}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href = "views/style/opening.css">
+    <title>마이페이지</title>
+</head>
+<body>
+  <div id="all">
+    <div id="header">
+      <div id="top">
+        <%- include('noLoginMenu') %>
+        <a href="/home">
+          <img src="views/image/logo.png" id="logo">
+        </a>
+      </div>
+      <%- include('menu') %>
+    </div>
+    <div id="name">
+      <h2>개찰 결과 등록하기</h2>
+    </div>
+    <div id="main">
+      <div id="posts">
+        <%
+        for(var i = 0; i < result.length; i++){
+            var data = result[i];
+        %>
+          <div id="post">
+            <div id="t">
+              <a href="/open/<%= data.id %>"><p id="title"><%= data.title %></p></a>
+              <p id="category">(<%= data.category %>)</p>
+              <input type="hidden" name="id" id="id" value="<%= data.id %>">
+              <a href="/delete/<%= data.id %>"><button type="submit" name="delete" id="delete" value="delete">삭제</button></a>
+              <p id="count">view <%= data.count %></p>
+            </div>
+            <div id="a">
+              <p id="auth"><%= data.auth %></p>
+              <p id="date"><%= data.date %> ~ <%= data.deadline %></p>
+            </div>
+          </div>
+        <% } %>
+    </div>
+    <div id="bottom">
+      <hr>
+      <br>
+      <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
+    </div>
+  </div>
+</body>
+</html>

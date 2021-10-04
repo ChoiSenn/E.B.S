@@ -62,7 +62,7 @@
             i++;
           }else{
             var data = result[i];
-          }
+
         %>
           <div id="post">
             <div id="t">
@@ -75,7 +75,7 @@
               <p id="date"><%= data.date %> ~ <%= data.deadline %></p>
             </div>
           </div>
-        <% } %>
+        <% }} %>
         <div id="page">
           <% for(var j = 0; j < result.length / page_num; j++){  %>
             [<a href="/posting/<%= j + 1 %>"><%= j + 1 %></a>]

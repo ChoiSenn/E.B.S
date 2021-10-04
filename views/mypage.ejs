@@ -39,6 +39,7 @@
               </tr>
             </tbody>
         </table>
+        <a href="/opening"><div id="open">입찰 결과 등록하기</div></a>
         <div id="posts">
           <%
           for(var i = 0; i < result.length; i++){
@@ -49,7 +50,7 @@
                 <a href="/edit/<%= data.id %>"><p id="title"><%= data.title %></p></a>
                 <p id="category">(<%= data.category %>)</p>
                 <input type="hidden" name="id" id="id" value="<%= data.id %>">
-                <a href="/delete/<%= data.id %>"><button type="submit" name="delete" id="delete" value="delete">삭제</button></a> 
+                <a href="/delete/<%= data.id %>"><button type="submit" name="delete" id="delete" value="delete">삭제</button></a>
                 <p id="count">view <%= data.count %></p>
               </div>
               <div id="a">
