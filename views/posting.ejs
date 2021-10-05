@@ -17,7 +17,7 @@
       <%- include('menu') %>
     </div>
     <div id="main">
-      <form action="<%page%>" method="get">
+      <form action="/posting" method="get">
         <div id="search">
           <h2>검색</h2>
           <div id="sear">
@@ -46,6 +46,16 @@
             <p>기타</p>
             <input type="radio" name="category" value="etc"/>
           </div>
+          <div id="delete">
+            <p>마감 공고 제외</p>
+            <input type="checkbox" name="dead" value="dead"/>
+            <p>마감 임박 제외</p>
+            <input type="checkbox" name="almost_dead" value="almost_dead"/>
+            <p>오래된 공고 제외</p>
+            <input type="checkbox" name="old" value="old"/>
+            <p>중복 공고 제외</p>
+            <input type="checkbox" name="overlap" value="overlap"/>
+          </div>
           <div id='searchbox'>
             <input type="text" name="searchb" placeholder="검색어를 입력하세요." id="searchb"/>
             <input type="submit" name="search" id="searchbutton" value="검색"></button>
@@ -57,12 +67,8 @@
         </div>
       <div id="posts">
         <%
-        for(var i = (page * page_num) - page_num; i < (page * page_num); i++){
-          if(i > length){
-            i++;
-          }else{
-            var data = result[i];
-
+        for(var i = 0; i < result.length; i++){
+          var data = result[i];
         %>
           <div id="post">
             <div id="t">
@@ -75,11 +81,7 @@
               <p id="date"><%= data.date %> ~ <%= data.deadline %></p>
             </div>
           </div>
-        <% }} %>
-        <div id="page">
-          <% for(var j = 0; j < result.length / page_num; j++){  %>
-            [<a href="/posting/<%= j + 1 %>"><%= j + 1 %></a>]
-          <% } %>
+        <% } %>
         </div>
       </div>
     </div>
@@ -116,7 +118,7 @@ a{text-decoration: none;}
 /* 본문 */
 #main{font-family: 'Jeju Gothic', sans-serif; text-align: center; margin-top: 10px;}
 #main p{text-align: center;}
-#search{height: 120px; background-color: #dcdcdc; margin-bottom: 10px; border-radius: 8px;}
+#search{height: 160px; background-color: #dcdcdc; margin-bottom: 10px; border-radius: 8px;}
 #search h2{font-size: 36px; padding-top: 40px; float: left; padding-left: 70px; margin-right: 70px;}
 #sear{padding-top: 16px;}
 #sear p, #sear input{float: left;}
@@ -127,7 +129,11 @@ a{text-decoration: none;}
 #searc input{margin-right: 46px; margin-top: 4px;}
 #searc p{margin-right: 10px; margin-top: 2px;}
 #sear p, #searc p{font-size: 20px;}
-#searchbox{margin-right: 180px;}
+#delete input{margin-right: 40px; margin-top: 4px;}
+#delete p{margin-right: 5px; margin-top: 2px;}
+#delete p{font-size: 20px;}
+#delete{float: left; margin-top: 10px;}
+#delete p, #delete input{float: left;}
 #searchb{font-size: 24px; margin-top: 8px;}
 #searchbutton{font-size: 20px; margin-top: 8px; font-weight: bolder;}
 
@@ -144,11 +150,10 @@ a{text-decoration: none;}
 #a{display: block; float: left; width: 814px; margin-left: 10px; margin-top: 14px;}
 #auth, #date{float: left; font-size: 20px;}
 #date{float: right; margin-right: 20px;}
-#page{text-align: center; font-size: 30px; color: white; margin-bottom: 10px;}
-#page a{color: white;}
+
 
 /* bottom */
-#bottom{margin-top: 40px; float: right; width: 1024px;}
+#bottom{margin-top: 30px; float: right; width: 1024px; margin-right: 435px;}
 #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}
 
 </style>

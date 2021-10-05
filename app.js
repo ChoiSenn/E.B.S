@@ -150,40 +150,67 @@ app.get('/Q&A', function(req, res, next){
 
 // 입찰 공고
 app.get('/posting', function(req, res, next){
-  res.redirect('/posting/1');
-  logging(now() + ' : 입찰공고 페이지에 접속하였습니다.');
-});
-
-app.get('/posting/:page', function(req, res, next){
-  var page = req.params.page;
   var order = ' ORDER BY';
   var day = ' date';
   var dead = ' deadline';
   var latest = ' ASC';
   var recent = ' DESC';
 
-  var searchquery = 'SELECT * FROM post WHERE (title LIKE ? OR content LIKE ?)';
+  var sql = 'SELECT * FROM post WHERE date < now()';
+  var searchquery = 'SELECT * FROM post WHERE date < now() AND (title LIKE ? OR content LIKE ?)';
 
   if(req.query.category == 'stuff'){
     searchquery = searchquery + " AND category='물품'";
+    sql = sql + " AND category='물품'";
   } else if (req.query.category == 'work') {
     searchquery = searchquery + " AND category='공사'";
+    sql = sql + " AND category='공사'";
   } else if (req.query.category == 'service') {
     searchquery = searchquery + " AND category='용역'";
+    sql = sql + " AND category='용역'";
   } else if (req.query.category == 'foreign') {
     searchquery = searchquery + " AND category='외자'";
+    sql = sql + " AND category='외자'";
   } else if (req.query.category == 'reserve') {
     searchquery = searchquery + " AND category='비축'";
+    sql = sql + " AND category='비축'";
   } else if (req.query.category == 'etc') {
     searchquery = searchquery + " AND category='기타'";
+    sql = sql + " AND category='기타'";
+  }
+
+  if(req.query.dead){
+    searchquery = searchquery + " AND deadline > now()";
+    sql = sql + " AND deadline > now()";
+  }
+  if(req.query.almost_dead){
+    searchquery = searchquery + " AND deadline > date_add(now(), interval 7 day)";
+    sql = sql + " AND deadline > date_add(now(), interval 7 day)";
+  }
+  if(req.query.old){
+    searchquery = searchquery + " AND date > date_sub(now(), interval 3 day)";
+    sql = sql + " AND date > date_sub(now(), interval 3 day)";
+  }
+  if(req.query.overlap){
+    searchquery = searchquery + " GROUP BY title";
+    sql = sql + " GROUP BY title";
   }
 
   if(req.query.day == 'day_recent'){
     searchquery = searchquery + order + day + recent;
+    sql = sql + order + day + recent;
   } else if (req.query.day == 'dead_latest') {
     searchquery = searchquery + order + dead + recent;
+    sql = sql + order + dead + recent;
   } else if (req.query.day == 'dead_recent') {
     searchquery = searchquery + order + dead + latest;
+    sql = sql + order + dead + latest;
+  } else if(req.query.day == 'day_latest'){
+    searchquery = searchquery + order + day + latest;
+    sql = sql + order + day + latest;
+  } else{
+    searchquery = searchquery + order + day + recent;
+    sql = sql + order + day + recent;
   }
 
   if(req.query.searchb){
@@ -195,49 +222,24 @@ app.get('/posting/:page', function(req, res, next){
         res.send("<script>alert('오류');location.href='/home';</script>");
       } else{
         res.render('posting.ejs', {
-          result: results,
-          page: page,
-          length: results.length-1,
-          page_num: 10
+          result: results
         });
       }
     });
   } else{
-    var sql = 'SELECT * FROM post ORDER BY date DESC';
     client.query(sql, (err, result, fields) => {
       if(err){
+        logging(sql);
         logging(now() + ' : DB 오류 발생.');
-        response.send("<script>alert('오류');location.href='/home';</script>");
+        res.send("<script>alert('오류');location.href='/home';</script>");
       } else{
         res.render('posting.ejs', {
-          result: result,
-          page: page,
-          length: result.length-1,
-          page_num: 10
+          result: result
         });
         logging(now() + ' : 입찰공고 페이지에 접속하였습니다.');
       }
     });
   }
-});
-
-app.get('/posting/search', function(req, res, next){
-  logging('접속');
-  var search = req.query.searchb;
-  logging(search);
-  var searchquery = 'SELECT * FROM post WHERE title LIKE ? OR content LIKE ? ORDER BY date DESC';
-
-  client.query(searchquery, ['%'+search+'%', '%'+search+'%'], function(err, results){
-    if(err){
-      logging(now() + ' : DB 오류 발생.');
-      response.send("<script>alert('오류');location.href='/home';</script>");
-    } else{
-      logging(results);
-      res.render('posting.ejs', {
-        result: results
-      });
-    }
-  });
 });
 
 app.get('/post/:id', function(req, res, next){
