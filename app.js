@@ -412,6 +412,40 @@ app.get('/opening', function(req, res, next){
 });
 
 app.get('/open/:id', function(req, res, next){
+  var id = req.params.id;
+  logging(id);
+
+  if(req.session.loggedin == true){
+    var sql = 'SELECT * FROM bidding WHERE post_id=?';
+    client.query(sql, [id], function(err, result){
+      f = result[0].bid_file;
+      fi = f.split('/');
+      file = fi[2];
+
+      if(result.length != 0){
+        var sqlpost = 'SELECT title FROM post WHERE id=?';
+        client.query(sqlpost, [id], function(err, data){
+          var t = JSON.stringify(data[0]);
+          var title = t.substring(10, t.length-2);
+
+          res.render('open.ejs',{
+            result: result,
+            title: title+'의',
+            file: file
+          });
+        });
+      }else{
+        res.render('notopen.ejs',{
+        });
+      }
+    });
+    logging(now() + ' : 입찰 현황 페이지에 접속하였습니다.');
+
+  } else{
+    logging(now() + ' : 허가받지 않은 사용자가 개찰 결과 등록 페이지에 접속하였습니다.');
+    res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
+  }
+
 
 });
 
@@ -434,13 +468,22 @@ app.get('/bidOpen', function(req, res, next){
 app.get('/bid/:id', function(req, res, next){
   var id = req.params.id;
 
-  if(req.session.loggedin == true){
-    res.render('bid.ejs');
-    logging(now() + ' : 입찰 등록 페이지에 접속하였습니다.');
-  } else{
-    logging(now() + ' : 허가받지 않은 사용자가 입찰 등록 페이지에 접속하였습니다.');
-    res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
-  }
+  var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
+  client.query(sql, [id], function(err, row){
+    logging(row[0].deadline);
+    if(row[0].deadline > now()){
+      f = row[0].file;
+      fi = f.split('/');
+      file = fi[2];
+      res.render('bid', {
+        row: row[0],
+        file: file
+      });
+    }else{
+      logging(now() + ' : 입찰이 마감된 공고입니다.');
+      res.send("<script>alert('입찰이 마감된 공고입니다.');location.href='/posting';</script>");
+    };
+  });
 });
 
 // post
@@ -453,9 +496,8 @@ app.post('/login', function(request, response){
   // 사용자 id가 존재하는지 확인
   var sql = 'SELECT * FROM user WHERE user_id = ?';
   client.query(sql, [id], (err, data) => {
+    var idnum = data[0].id;
     var id = data[0].user_id;
-    logging('1 '+data[0].user_id);
-    logging('2 '+id);
     var name = data[0].name;
     var prov = data[0].provider;
     var date = data[0].created_at;
@@ -490,12 +532,11 @@ app.post('/login', function(request, response){
               // 패스워드 일치 성공 시 세션에 로그인 성공 저장
                 logging(now() + ' : 로그인 하였습니다!');
                 request.session.loggedin = true;
+                request.session.idnum = idnum;
                 request.session.userid = id;
                 request.session.name = name;
                 request.session.prov = prov;
                 request.session.date = date;
-                logging('3 '+id);
-                logging('4 '+request.session.userid);
                 response.send("<script>alert('로그인 하였습니다!');location.href='/home';</script>");
               }
             });
@@ -511,14 +552,18 @@ app.post('/signup', function(request, response){
   var name = request.body.name;
   var provider = request.body.provider;
   var ch = request.body.ch;
+  var p1 = request.body.txtMobile1;
+  var p2 = request.body.txtMobile2;
+  var p3 = request.body.txtMobile3;
+  var phone = p1 +'-'+ p2 +'-'+ p3;
+  logging(phone);
   var time = now();
-  logging(provider);
 
   // user테이블에 해당 user_ID가 이미 있는지 확인하는 쿼리
   var idcheck = 'SELECT * FROM user WHERE user_id = ?';
 
   // 입력이 다 되어있는지 확인
-  if(!id || !pd || !pwre || !name || !provider || !ch){
+  if(!id || !pd || !pwre || !name || !provider || !ch || !phone){
     logging(provider);
     logging(now() + ' : 데이터 입력 값 부족으로 회원가입 실패!');
     response.send("<script>alert('값을 전부 입력해주세요.');location.href='/signup';</script>");
@@ -544,8 +589,8 @@ app.post('/signup', function(request, response){
         // 보안을 위해 패스워드 암호화
         var encryption = encryptionPW(pd)
         // 아이디와 암호화 한 패스워드를 DB에 저장
-        signupsql = 'INSERT INTO user (user_id, password, name, provider, created_at) VALUES (?, ?, ?, ?, ?)';
-        client.query(signupsql, [id, encryption, name, provider, time], function(err, result, fields){
+        signupsql = 'INSERT INTO user (user_id, password, name, provider, created_at, phone_num) VALUES (?, ?, ?, ?, ?, ?)';
+        client.query(signupsql, [id, encryption, name, provider, time, phone], function(err, result, fields){
           if (err){
             logging(now() + ' : 회원가입 DB 오류! 2');
             response.send("<script>alert('오류');location.href='/signup';</script>");
@@ -585,7 +630,33 @@ app.post('/postW/write', upload.single('file'), (req, res)=>{
   }
 });
 
+// 입찰 신청 작성
+app.post('/bid/:id', upload.single('bid_file'), (req, res)=>{
+  var post_id = req.body.id;
+  var auth_id = req.session.idnum;
+  logging(post_id);
+  logging(auth_id);
 
+  var bid_firm = req.body.bid_firm;
+  var bid_ceo = req.body.bid_ceo;
+  var bid_price = req.body.bid_price;
+  var bid_etc = req.body.bid_etc;
+  var bid_file = `/files/${req.file.filename}`;
+
+  var datas = [post_id, auth_id, bid_firm, bid_ceo, bid_price, bid_file, now(), bid_etc];
+  var sql = 'INSERT INTO bidding(post_id, auth_id, bid_firm, bid_ceo, bid_price, bid_file, bid_time, bid_etc) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
+  client.query(sql, datas, function(err, result){
+    logging('sql '+sql);
+    logging('datas '+datas);
+    logging('result '+result);
+    if(err){
+      logging(now() + ' : 입찰 신청 DB 오류!');
+      res.send("<script>alert('오류');location.href='/posting';</script>");
+    } else{
+      res.redirect('/posting');
+    }
+  });
+});
 
 
 // catch 404 and forward to error handler

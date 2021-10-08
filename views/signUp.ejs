@@ -40,6 +40,19 @@
                 <td><label id="name">이름</label></td>
                 <td><input type="TEXT" name="name" id="name"></td>
               </tr>
+                <td><label id = "phone_num">전화번호</label></td>
+                <td>
+                  <select id="txtMobile1" name="txtMobile1">
+                    <option value="" id="ph">::선택::</option>
+                    <option value="011" id="ph1">011</option>
+                    <option value="016" id="ph2">016</option>
+                    <option value="017" id="ph3">017</option>
+                    <option value="019" id="ph4">019</option>
+                    <option value="010" id="ph5">010</option>
+                  </select>
+                <input type="text" id="txtMobile2" size="4" onkeypress="onlyNumber();" name="txtMobile2" />
+                <input type="text" id="txtMobile3" size="4" name="txtMobile3" />
+              </td>
               <tr>
                 <td><label id="name">분류</label></td>
                 <td><input type="checkbox" name="provider" value="buyer" id="buyer" onclick='checkOnlyOne(this)'><label id="class">구매자<input type="checkbox" name="provider" value="prov" id="prov" onclick='checkOnlyOne(this)'>공급자</td>
@@ -71,6 +84,21 @@
       })
 
       element.checked = true;
+    }
+
+    function onlyNumber() {
+        if ((event.keyCode < 48) || (event.keyCode > 57))
+            event.returnValue = false;
+    }
+
+    function CheckForm() {
+        if (document.getElementById("txtMobile1").value == "") {
+            window.alert("휴대폰 번호를 선택하시오.");
+            return false;
+        }
+        if (document.getElementById("txtMobile2").value.length != 4) {
+            window.alert("가운데 번호는 4자리로 입력하세요");
+        }
     }
   </script>
 </body>

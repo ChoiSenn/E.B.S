@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>글 상세</title>
+    <title>입찰 등록</title>
 </head>
 <body>
   <div id="all">
@@ -18,6 +18,32 @@
     </div>
     <div id="main">
         <h2>입찰 등록</h2>
+        <form method="post" enctype="multipart/form-data">
+          <table>
+            <input type="hidden" name="id" value="<%= row.id %>">
+            <tr id="f">
+                <td id="tagf">기업</td>
+                <td><input type="text" name="bid_firm" id="bid_firm" required/></td>
+            </tr>
+            <tr id="c">
+                <td id="tagc">대표</td>
+                <td><input type="text" name="bid_ceo" id="bid_ceo" required/></td>
+            </tr>
+            <tr id="p">
+                <td id="tagp">가격</td>
+                <td><input type="number" name="bid_price" id="bid_price" required/></td>
+            </tr>
+            <tr id="t">
+                <td id="tagt">기타 내용</td>
+                <td><textarea name="bid_etc" id="bid_etc" required></textarea></td>
+            </tr>
+            <tr id="f">
+                <td id="tagf">파일</td>
+                <td><input type="file" name="bid_file" id="bid_file" required/></td>
+            </tr>
+          </table>
+          <button type="submit" id="submit">입찰 신청하기</button>
+        </form>
     </div>
     <div id="bottom">
       <hr>
@@ -53,6 +79,37 @@
   #main{margin-top: 70px; margin-bottom: 10px; font-family: 'Jeju Gothic', sans-serif; text-align: center;}
   #main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
     border-bottom: 3px solid black; width:150px; margin: 0 auto; margin-bottom: 70px;}
+  #main{font-family: 'Jeju Gothic', sans-serif; text-align: center;  margin-top: 70px;}
+  #main p{text-align: center;}
+  #main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
+    border-bottom: 3px solid black; width:150px; margin: 0 auto; margin-bottom: 70px;}
+  #write{width: 1018px;
+    border-collapse: collapse; border-spacing: 0;}
+  table{width:100%; border-collapse: collapse; border-spacing: 0;
+    border-style: solid; border-color: #3C5087; border-width: 4px;
+    }
+  #n{height: 50px;}
+  #c{height: 50px;}
+  #t{height: 800px;}
+  #f, #p{height: 50px;}
+  #tagn{width:20%;}
+  #tagc{width:20%;}
+  #cate{padding-left: 44px;}
+  #cate p, #cate input{float: left;}
+  #cate p{margin-right: 10px;}
+  #cate input{margin-right: 60px; margin-top: 5px;}
+  #tagt, #tagp{width:20%;}
+  #tagf{width:20%;}
+  #bid_firm, #bid_ceo, #bid_price{width: 780px; height: 30px;}
+  #bid_etc{width: 780px; height: 760px;}
+  #bid_file{width: 780px;}
+  #submit{margin-top: 80px; width: 100px; height: 50px;
+    font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+  td{font-family: 'Jeju Gothic', sans-serif; font-size: x-large;
+    border: 2px solid #3C5087; border-radius: 4px;}
+  input{font-size: 24px; font-family: 'Jeju Gothic', sans-serif;}
+    textarea{font-size: 24px; font-family: 'Jeju Gothic', sans-serif;}
+  button{width: 200px; height: 50px;}
 
   /* bottom */
   #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}
