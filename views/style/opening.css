@@ -25,7 +25,7 @@ a{text-decoration: none;}
 #main p{text-align: center;}
 #name h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
   border-bottom: 3px solid black; width:260px; margin: 0 auto;
-  margin-top: 70px; margin-bottom: 10px;}
+  margin-top: 70px;}
 #posts{background-color: grey; width: 834px; float: right; border-radius: 8px; margin-top: 10px; margin-right: 90px;}
 #post{background-color: white; width: 814px; height: 100px;
   margin: 10px; border-radius: 8px;}
@@ -38,6 +38,12 @@ a{text-decoration: none;}
 #date{float: right; margin-right: 20px;}
 #delete{background-color: red; font-weight: bolder; color: white; width: 50px; height: 30px; border-radius: 8px; font-size: 20px;
   float: left; margin-left: 20px; margin-top: 12px;}
+#search{background-color: lightgrey; width: 834px; border-radius: 8px; float: right; margin-right: 90px; height: 50px;}
+#sear input, #sear p{float: left;}
+#in{margin-right: 40px;}
+#sear p{margin-left: 10px; margin-right: 10px;}
+#sear{margin-top: 18px;}
+#s{height: 20px; width: 60px; font-size: 14px; font-weight: bolder; margin-left: 50px;}
 
 /* bottom */
 #bottom{margin-top: 40px; float: right; width: 1024px;}

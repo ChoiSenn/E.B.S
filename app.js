@@ -397,14 +397,39 @@ app.get('/plzlogin', function(req, res, next){
 
 // 개찰 결과 등록 페이지
 app.get('/opening', function(req, res, next){
+  var order = ' ORDER BY';
+  var day = ' date';
+  var dead = ' deadline';
+  var latest = ' ASC';
+  var recent = ' DESC';
+
+  var sql = 'SELECT * FROM post WHERE auth=? AND deadline<?';
+
+  if(req.query.day == 'day_recent'){
+    sql = sql + order + day + recent;
+  } else if (req.query.day == 'dead_recent') {
+    sql = sql + order + dead + recent;
+  } else if (req.query.day == 'dead_latest') {
+    sql = sql + order + dead + latest;
+  } else if(req.query.day == 'day_latest'){
+    sql = sql + order + day + latest;
+  } else{
+    sql = sql + order + day + recent;
+  }
+
   if(req.session.loggedin == true){
-    var sql = 'SELECT * FROM post WHERE auth=? AND deadline<? ORDER BY date DESC';
-    client.query(sql, [req.session.name, now()], function(err, result){
-      res.render('opening.ejs',{
-        result: result
-      });
+    client.query(sql, [req.session.name, now()],function(err, result){
+      if(err){
+        logging(now() + ' : DB 오류 발생.');
+        res.send("<script>alert('오류');location.href='/home';</script>");
+      } else{
+        logging(sql);
+        res.render('opening.ejs', {
+          result: result
+        });
+        logging(now() + ' : 개찰 결과 등록 페이지에 접속하였습니다.');
+      }
     });
-    logging(now() + ' : 개찰결과 등록 페이지에 접속하였습니다.');
   } else{
     logging(now() + ' : 허가받지 않은 사용자가 개찰 결과 등록 페이지에 접속하였습니다.');
     res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
@@ -418,25 +443,38 @@ app.get('/open/:id', function(req, res, next){
   if(req.session.loggedin == true){
     var sql = 'SELECT * FROM bidding WHERE post_id=?';
     client.query(sql, [id], function(err, result){
-      f = result[0].bid_file;
-      fi = f.split('/');
-      file = fi[2];
-
       if(result.length != 0){
         var sqlpost = 'SELECT title FROM post WHERE id=?';
         client.query(sqlpost, [id], function(err, data){
+          var f = result[0].bid_file;
+          fi = f.split('/');
+          file = fi[2];
+
           var t = JSON.stringify(data[0]);
           var title = t.substring(10, t.length-2);
 
-          res.render('open.ejs',{
-            result: result,
-            title: title+'의',
-            file: file
-          });
+          var already = 0;
+
+          for(var i = 0; i < result.length; i++){
+            if(result[i].bid_select == 1){
+              already++;
+            }
+          }
+          if(already > 0){
+            res.send("<script>alert('이미 개찰된 공고입니다! 개찰 결과를 등록할 수 없습니다.');location.href='/opening';</script>");
+            logging(now() + ' : 이미 개찰된 공고입니다.');
+          } else{
+            res.render('open.ejs',{
+              result: result,
+              title: title+'의',
+              file: file,
+              id: id
+            });
+          }
         });
-      }else{
-        res.render('notopen.ejs',{
-        });
+      } else {
+        res.render('notopen.ejs');
+        logging(now() + ' : 아직 입찰이 없습니다.');
       }
     });
     logging(now() + ' : 입찰 현황 페이지에 접속하였습니다.');
@@ -445,22 +483,107 @@ app.get('/open/:id', function(req, res, next){
     logging(now() + ' : 허가받지 않은 사용자가 개찰 결과 등록 페이지에 접속하였습니다.');
     res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
   }
+});
 
+app.get('/bidselect/:post_id/:id', function(req, res, next){
+  var bid_id = req.params.id;
+  var post_id = req.params.post_id;
 
+  var sql = 'SELECT bid_select FROM bidding WHERE post_id=?';
+  client.query(sql, [post_id], function(err, result){
+    if(err){
+      logging('오류1');
+    } else{
+      var sqlbid = 'UPDATE bidding SET bid_select=1 WHERE id=?';
+      client.query(sqlbid, [bid_id], function(err, data){
+        if(err){
+          logging('오류2');
+        } else {
+          res.send("<script>alert('낙찰하였습니다! 개찰 결과에 표시됩니다.');location.href='/opening';</script>");
+          logging(now() + ' : ' + bid_id + '번째 입찰이 선택되었습니다. 개찰 결과에 표시됩니다.');
+        }
+      });
+    }
+  });
 });
 
 // 개찰 결과 열람 페이지
 app.get('/bidOpen', function(req, res, next){
   if(req.session.loggedin == true){
-    var sql = 'SELECT * FROM post WHERE auth=? AND deadline<? ORDER BY date DESC';
-    client.query(sql, [req.session.name, now()], function(err, result){
-      res.render('bidOpen.ejs',{
-        result: result
-      });
+    var sql = 'SELECT * FROM bidding WHERE auth_id=? ORDER BY bid_time DESC';
+    client.query(sql, [req.session.idnum], function(err, result){
+      if(result){
+        var f = result[0].bid_file;
+        fi = f.split('/');
+        file = fi[2];
+
+        res.render('bidOpen.ejs',{
+          result: result,
+          file: file
+        });
+      }else{
+        logging(now() + ' : 아직 참여한 입찰이 없습니다.');
+        res.send("<script>alert('아직 참여한 입찰이 없습니다.');location.href='/posting';</script>");
+      }
     });
     logging(now() + ' : 개찰결과 열람 페이지에 접속하였습니다.');
   } else{
-    logging(now() + ' : 허가받지 않은 사용자가 개찰 열람 등록 페이지에 접속하였습니다.');
+    logging(now() + ' : 허가받지 않은 사용자가 개찰 열람 페이지에 접속하였습니다.');
+    res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
+  }
+});
+
+app.get('/bidOpen/:post_id/:id', function(req, res, next){
+  var post_id = req.params.post_id;
+  var id = req.params.id;
+
+  if(req.session.loggedin == true){
+    var sql = 'SELECT * FROM post WHERE id=?';
+    client.query(sql, [post_id], function(err, result){
+      if(err){
+        logging('오류1');
+      } else{
+        var sqlbid = 'SELECT * FROM bidding WHERE id=?';
+        client.query(sqlbid, [id], function(err, results){
+          if(err){
+            logging('오류2');
+          } else{
+            var sqlselect = 'SELECT * FROM bidding WHERE post_id=?';
+            client.query(sqlselect, [post_id], function(err, data){
+              if(err){
+                logging('오류3');
+              } else{
+                var select = 0;
+
+                for(var i = 0; i < data.length; i++){
+                  if(data[i].bid_select == 1){
+                    select++;
+                  }
+                }
+
+                if(select > 0){
+                  var f = result[0].file;
+                  fi = f.split('/');
+                  file = fi[2];
+
+                  logging(now() + ' : 개찰결과 확인 페이지에 접속하였습니다.');
+                  res.render('bidOpenpage.ejs',{
+                    result: result[0],
+                    results: results[0],
+                    file: file
+                  });
+                } else {
+                  logging(now() + ' : 아직 개찰이 완료되지 않았습니다.');
+                  res.send("<script>alert('아직 개찰이 완료되지 않았습니다.');location.href='/bidOpen';</script>");
+                }
+              }
+            });
+          }
+        });
+      }
+    });
+  } else{
+    logging(now() + ' : 허가받지 않은 사용자가 개찰 확인 페이지에 접속하였습니다.');
     res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
   }
 });
@@ -472,13 +595,18 @@ app.get('/bid/:id', function(req, res, next){
   client.query(sql, [id], function(err, row){
     logging(row[0].deadline);
     if(row[0].deadline > now()){
-      f = row[0].file;
-      fi = f.split('/');
-      file = fi[2];
-      res.render('bid', {
-        row: row[0],
-        file: file
-      });
+      if(row[0].auth == req.session.name){
+        logging(now() + ' : 자신이 올린 공고에 입찰을 신청하였습니다..');
+        res.send("<script>alert('자신이 올린 공고에는 입찰 신청할 수 없습니다.');location.href='/posting';</script>");
+      } else{
+        f = row[0].file;
+        fi = f.split('/');
+        file = fi[2];
+        res.render('bid', {
+          row: row[0],
+          file: file
+        });
+      }
     }else{
       logging(now() + ' : 입찰이 마감된 공고입니다.');
       res.send("<script>alert('입찰이 마감된 공고입니다.');location.href='/posting';</script>");
@@ -496,11 +624,7 @@ app.post('/login', function(request, response){
   // 사용자 id가 존재하는지 확인
   var sql = 'SELECT * FROM user WHERE user_id = ?';
   client.query(sql, [id], (err, data) => {
-    var idnum = data[0].id;
-    var id = data[0].user_id;
-    var name = data[0].name;
-    var prov = data[0].provider;
-    var date = data[0].created_at;
+
     if (err) {
       logging(now() + ' : 로그인 오류 발생.');
       response.send("<script>alert('오류');location.href='/login';</script>");
@@ -511,6 +635,11 @@ app.post('/login', function(request, response){
       logging(now() + ' : ID가 다릅니다. 로그인 실패!');
       response.send("<script>alert('ID 혹은 암호가 다릅니다!');location.href='/login';</script>");
     }else{
+      var idnum = data[0].id;
+      var id = data[0].user_id;
+      var name = data[0].name;
+      var prov = data[0].provider;
+      var date = data[0].created_at;
 
           // 패스워드 암호화
           var encryption = encryptionPW(pd)
@@ -561,6 +690,7 @@ app.post('/signup', function(request, response){
 
   // user테이블에 해당 user_ID가 이미 있는지 확인하는 쿼리
   var idcheck = 'SELECT * FROM user WHERE user_id = ?';
+  var namecheck = 'SELECT * FROM user WHERE name = ?';
 
   // 입력이 다 되어있는지 확인
   if(!id || !pd || !pwre || !name || !provider || !ch || !phone){
@@ -575,28 +705,38 @@ app.post('/signup', function(request, response){
       if(err){
         logging(now() + ' : 회원가입 DB 오류! 1' + err);
         response.send("<script>alert('오류');location.href='/signup';</script>");
-      } else if(results.length === 1){ // 이미 같은 id로 회원이 존재한다면
+      } else if(results.length >= 1){ // 이미 같은 id로 회원이 존재한다면
         logging(now() + ' : 중복 ID로 회원가입 시도하여 실패!');
         response.send("<script>alert('이미 같은 ID가 존재합니다!');location.href='/signup';</script>");
       } else { // 회원가입 시작
-        if (provider == "buyer") {  // 체크에 따라 구매자/공급자
-          provider = 0;
-          logging(provider);
-        } else{
-          provider = 1;
-          logging(provider);
-        }
-        // 보안을 위해 패스워드 암호화
-        var encryption = encryptionPW(pd)
-        // 아이디와 암호화 한 패스워드를 DB에 저장
-        signupsql = 'INSERT INTO user (user_id, password, name, provider, created_at, phone_num) VALUES (?, ?, ?, ?, ?, ?)';
-        client.query(signupsql, [id, encryption, name, provider, time, phone], function(err, result, fields){
-          if (err){
-            logging(now() + ' : 회원가입 DB 오류! 2');
+        client.query(namecheck, [name], (err, data, fields) => {
+          if(err){
+            logging(now() + ' : 회원가입 DB 오류! 3' + err);
             response.send("<script>alert('오류');location.href='/signup';</script>");
+          } else if(data.length >= 1){
+            logging(now() + ' : 중복 이름으로 회원가입 시도하여 실패!');
+            response.send("<script>alert('이미 같은 이름이 존재합니다!');location.href='/signup';</script>");
           } else{
-            logging(now() + ' : 회원가입 성공!');
-            response.send("<script>alert('회원가입에 성공하였습니다! 로그인해주세요.');location.href='/login';</script>");
+            if (provider == "buyer") {  // 체크에 따라 구매자/공급자
+              provider = 0;
+              logging(provider);
+            } else{
+              provider = 1;
+              logging(provider);
+            }
+            // 보안을 위해 패스워드 암호화
+            var encryption = encryptionPW(pd)
+            // 아이디와 암호화 한 패스워드를 DB에 저장
+            signupsql = 'INSERT INTO user (user_id, password, name, provider, created_at, phone_num) VALUES (?, ?, ?, ?, ?, ?)';
+            client.query(signupsql, [id, encryption, name, provider, time, phone], function(err, result, fields){
+              if (err){
+                logging(now() + ' : 회원가입 DB 오류! 2');
+                response.send("<script>alert('오류');location.href='/signup';</script>");
+              } else{
+                logging(now() + ' : 회원가입 성공!');
+                response.send("<script>alert('회원가입에 성공하였습니다! 로그인해주세요.');location.href='/login';</script>");
+              }
+            });
           }
         });
       }
