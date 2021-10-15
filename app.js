@@ -132,8 +132,20 @@ app.get('/', function(req, res, next){
 });
 
 app.get('/home', function(req, res, next){
-  res.render('home.ejs');
-  logging(now() + ' : 홈 페이지에 접속하였습니다!');
+  var sql = 'SELECT * FROM post ORDER BY date DESC';
+
+  client.query(sql, (err, result, fields) => {
+    if(err){
+      logging(sql);
+      logging(now() + ' : DB 오류 발생.');
+      res.send("<script>alert('오류');location.href='/home';</script>");
+    } else{
+      res.render('home.ejs', {
+        result: result
+      });
+      logging(now() + ' : 홈 페이지에 접속하였습니다!');
+    }
+  });
 });
 
 // 공지사항

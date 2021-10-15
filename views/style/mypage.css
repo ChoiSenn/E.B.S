@@ -6,19 +6,23 @@ li{list-style: none;}
 a{text-decoration: none;}
 
 /* 전체 크기 설정 */
+body{background-color: #F7EBED;}
 #all{width: 1024px; margin: 0 auto;}
 
 /* header */
 #top{padding-top: 100px;}
-#loginMenu{float: right; margin-top: 110px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
+#loginMenu{float: right; margin-top: 110px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif; color: #1b1e2b;}
+#loginMenu a:link{color: #563945;}
+#loginMenu a:visited{color: #563945;}
+#loginMenu a:hover{color: #563945;}
 #lo{margin-right: 20px;}
 #menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
-  justify-content: space-around; background-color: #B4B4DC;
+  justify-content: space-around; background-color: #3c2832;
   border-radius: 8px;}
 #menu a{font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
-#menu a:link{color: #00008C;}
-#menu a:visited{color: #00008C;}
-#menu a:hover{color: #CECEF6;}
+#menu a:link{color: #DCBEC3;}
+#menu a:visited{color: #DCBEC3;}
+#menu a:hover{color: #C49AA1;}
 
 /* 본문 */
 #main{font-family: 'Jeju Gothic', sans-serif; text-align: center;  margin-top: 70px;}
@@ -27,20 +31,20 @@ a{text-decoration: none;}
   border-bottom: 3px solid black; width:140px; margin: 0 auto;
   margin-top: 70px; margin-bottom: 10px;}
 table{display: flex; display: -webkit-box; display: -ms-flexbox;
-  overflow-x: auto; overflow-y: hidden; border: 4px solid #A0A0C8;
+  overflow-x: auto; overflow-y: hidden; border: 4px solid #956C78;
   width: 1018px; border-radius: 6px;
   border-collapse: collapse; border-spacing: 0;}
-thead{background-color: #CECEF6;}
+thead{background-color: #ECD2D6;}
 tbody{display: flex;}
 th, td{display: block; font-size: x-large;
-  border: 1px solid #B4B4DC;
+  border: 1px solid #956C78;
   padding: 30px 0;}
 th{width: 200px; height: 30px;}
 td{width: 806px; text-align: center; height: 30px;}
-#open{width: 180px; height: 40px; background-color: lightgrey; color: black; margin: 0 auto; font-size: 20px; font-weight: bolder;
+#open{width: 180px; height: 40px; background-color: #956C78; color: #F7EBED; margin: 0 auto; font-size: 20px; font-weight: bolder;
   margin-top: 30px; border-radius: 8px; padding-top: 20px;}
-#posts{background-color: grey; width: 834px; float: right; border-radius: 8px; margin-top: 30px; margin-right: 90px;}
-#post{background-color: white; width: 814px; height: 100px;
+#posts{background-color: #956C78; width: 834px; float: right; border-radius: 8px; margin-top: 30px; margin-right: 90px;}
+#post{background-color: #F3DEE0; width: 814px; height: 100px;
   margin: 10px; border-radius: 8px;}
 #t{margin-left: 10px; display: block;}
 #title{float: left; font-size: 30px; font-weight: bolder; margin-top: 10px; color: black;}

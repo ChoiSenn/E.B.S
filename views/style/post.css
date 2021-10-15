@@ -6,19 +6,23 @@ li{list-style: none;}
 a{text-decoration: none;}
 
 /* 전체 크기 설정 */
+body{background-color: #F7EBED;}
 #all{width: 1024px; margin: 0 auto;}
 
 /* header */
 #top{padding-top: 100px;}
-#loginMenu{float: right; margin-top: 110px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif;}
+#loginMenu{float: right; margin-top: 110px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif; color: #1b1e2b;}
+#loginMenu a:link{color: #563945;}
+#loginMenu a:visited{color: #563945;}
+#loginMenu a:hover{color: #563945;}
 #lo{margin-right: 20px;}
 #menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
-  justify-content: space-around; background-color: #B4B4DC;
+  justify-content: space-around; background-color: #3c2832;
   border-radius: 8px;}
 #menu a{font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
-#menu a:link{color: #00008C;}
-#menu a:visited{color: #00008C;}
-#menu a:hover{color: #CECEF6;}
+#menu a:link{color: #DCBEC3;}
+#menu a:visited{color: #DCBEC3;}
+#menu a:hover{color: #C49AA1;}
 
 /* 본문 */
 #main{padding-top: 300px; padding-bottom: 300px;}
