@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href = "views/style/ex.css">
+    <link rel="stylesheet" href = "views/style/notice.css">
     <title>공지사항</title>
 </head>
 <body>
@@ -18,7 +18,19 @@
       <%- include('menu') %>
     </div>
     <div id="main">
-        <p>공지사항입니다.</p>
+      <h2>공지사항</h2>
+      <div id="posts">
+          <div id="post">
+            <div id="t">
+              <a href="/noticePosts"><p id="title">전체 공지사항</p></a>
+              <p id="auth">관리자</p>
+              <p id="date">2021.10.18</p>
+            </div>
+            <div id="a">
+              <p id="text">안녕하십니까, 전자 입찰 웹사이트 'EBS'입니다.</p>
+            </div>
+          </div>
+        </div>
     </div>
     <div id="bottom">
       <hr>

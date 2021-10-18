@@ -626,6 +626,17 @@ app.get('/bid/:id', function(req, res, next){
   });
 });
 
+app.get('/noticePosts', function(req, res, next){
+  res.render('noticePosts.ejs');
+});
+
+app.get('/A1', function(req, res, next){
+  res.render('A1.ejs');
+});
+
+
+
+
 // post
 
 // 로그인 페이지
