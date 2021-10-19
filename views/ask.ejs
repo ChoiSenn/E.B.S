@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>입찰 등록</title>
+</head>
+<body>
+  <div id="all">
+    <div id="header">
+      <div id="top">
+        <%- include('noLoginMenu') %>
+        <a href="/home">
+          <img src="/views/image/logo.png" id="logo">
+        </a>
+      </div>
+      <%- include('menu') %>
+    </div>
+    <div id="main">
+        <h2>문의하기</h2>
+        <form method="post">
+          <table>
+            <input type="hidden" name="id" value="<%= post_id %>">
+            <tr id="f">
+                <td id="tagf">제목</td>
+                <td><input type="text" name="ask_title" id="ask_title" required/></td>
+            </tr>
+            <tr id="t">
+                <td id="tagt">기타 내용</td>
+                <td><textarea name="ask_content" id="ask_content" required></textarea></td>
+            </tr>
+          </table>
+          <button type="submit" id="submit">문의하기</button>
+        </form>
+    </div>
+    <div id="bottom">
+      <hr>
+      <br>
+      <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
+    </div>
+  </div>
+</body>
+<style media="screen">
+  @import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+  /* 기본 설정 리셋 */
+  *{margin: 0; padding: 0;}
+  li{list-style: none;}
+  a{text-decoration: none;}
+
+  /* 전체 크기 설정 */
+  body{background-color: #F7EBED;}
+  #all{width: 1024px; margin: 0 auto;}
+
+  /* header */
+  #top{padding-top: 100px;}
+  #loginMenu{float: right; margin-top: 110px; margin-right: 12px; font-family: 'Jeju Gothic', sans-serif; color: #1b1e2b;}
+  #loginMenu a:link{color: #563945;}
+  #loginMenu a:visited{color: #563945;}
+  #loginMenu a:hover{color: #563945;}
+  #lo{margin-right: 20px;}
+  #menu{margin-top: 10px; padding-top: 20px; padding-bottom: 20px; display: flex;
+    justify-content: space-around; background-color: #3c2832;
+    border-radius: 8px;}
+  #menu a{font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+  #menu a:link{color: #DCBEC3;}
+  #menu a:visited{color: #DCBEC3;}
+  #menu a:hover{color: #C49AA1;}
+
+  /* 본문 */
+  #main{margin-top: 70px; margin-bottom: 10px; font-family: 'Jeju Gothic', sans-serif; text-align: center;}
+  #main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
+    border-bottom: 3px solid black; width:150px; margin: 0 auto; margin-bottom: 70px;}
+  #main{font-family: 'Jeju Gothic', sans-serif; text-align: center;  margin-top: 70px;}
+  #main p{text-align: center;}
+  #main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
+    border-bottom: 3px solid black; width:150px; margin: 0 auto; margin-bottom: 70px;}
+  #write{width: 1018px;
+    border-collapse: collapse; border-spacing: 0;}
+  table{width:100%; border-collapse: collapse; border-spacing: 0;
+    border-style: solid; border-color: #3c2832; border-width: 4px;
+    }
+  #n{height: 50px;}
+  #c{height: 50px;}
+  #t{height: 800px;}
+  #f, #p{height: 50px;}
+  #tagn{width:20%;}
+  #tagc{width:20%;}
+  #cate{padding-left: 44px;}
+  #cate p, #cate input{float: left;}
+  #cate p{margin-right: 10px;}
+  #cate input{margin-right: 60px; margin-top: 5px;}
+  #tagt, #tagp{width:20%;}
+  #tagf{width:20%;}
+  #submit{margin-top: 80px; width: 140px; height: 60px; background-color: #DCBEC3;
+    font-family: 'Jeju Gothic', sans-serif; font-size: larger;}
+  td{font-family: 'Jeju Gothic', sans-serif; font-size: x-large;
+    border: 2px solid #3c2832; border-radius: 4px;}
+  input{font-size: 24px; font-family: 'Jeju Gothic', sans-serif;}
+    textarea{font-size: 24px; font-family: 'Jeju Gothic', sans-serif;width: 780px; height: 760px;}
+    #ask_title{width: 780px; height: 30px;}
+  button{width: 200px; height: 50px; margin-bottom: 70px;}
+
+  /* bottom */
+  #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}
+
+</style>
+</html>

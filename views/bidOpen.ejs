@@ -28,7 +28,6 @@
                 <th>기업명</th>
                 <th>대표</th>
                 <th>가격</th>
-                <th>관련 파일</th>
                 <th>입찰 시각</th>
                 <th>기타</th>
               </tr>
@@ -38,11 +37,11 @@
                   var data = result[i];
               %>
               <tr id="ta">
+                <input type="hidden" name="id" value="<%= data.post_id %>">
                 <td><a href="/bidOpen/<%= data.post_id %>/<%= data.id %>">상세 보기</a></td>
                 <td><%= data.bid_firm %></td>
                 <td><%= data.bid_ceo %></td>
                 <td><%= data.bid_price %></td>
-                <td><a href="/download/<%= file %>"><%= file %></a></td>
                 <td><%= data.bid_time %></td>
                 <td><%= data.bid_etc %></td>
               </tr>

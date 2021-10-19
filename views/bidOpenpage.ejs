@@ -34,9 +34,10 @@
         <h2 id='title'>개찰 결과</h2>
         <% if(results.bid_select == 0){ %>
           <p id='q'>낙찰되지 않았습니다.</p>
+          <p id='w'><a href="/ask/<%= post_id %>">담당자에게 문의하기</a></p>
         <% } else{ %>
           <p id='q'>낙찰되었습니다!</p>
-          <p id='w'>1:1 채팅 바로가기</p>
+          <p id='w'><a href="/ask/<%= post_id %>">담당자에게 문의하기</a></p>
         <% } %>
       </div>
     </div>
@@ -88,7 +89,9 @@
   #bid{width: 200px; height: 50px; font-size: 20px; font-weight: bolder; border-radius: 8px; margin: 0 auto; padding-top: 20px; margin-top: 50px;
     background-color: lightgrey; color: black; padding-left: 70px; margin-bottom: 30px;}
   #q{margin-top: 50px; font-size: 30px;}
-  #w{font-size: 26px; border-bottom: 3px solid black; width: 220px; margin: 0 auto; margin-top: 50px;}
+  #w{font-size: 26px; border-bottom: 3px solid black; width: 240px; margin: 0 auto; margin-top: 50px; color: #3c2832;}
+  #w a{color: #3c2832;}
+  #w a:visited{color: #3c2832;}
 
 
   /* bottom */

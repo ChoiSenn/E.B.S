@@ -582,7 +582,8 @@ app.get('/bidOpen/:post_id/:id', function(req, res, next){
                   res.render('bidOpenpage.ejs',{
                     result: result[0],
                     results: results[0],
-                    file: file
+                    file: file,
+                    post_id: post_id
                   });
                 } else {
                   logging(now() + ' : 아직 개찰이 완료되지 않았습니다.');
@@ -632,6 +633,14 @@ app.get('/noticePosts', function(req, res, next){
 
 app.get('/A1', function(req, res, next){
   res.render('A1.ejs');
+});
+
+app.get('/ask/:post_id', function(req, res, next){
+  var post_id = post_id;
+  logging(post_id);
+  res.render('ask.ejs',{
+    post_id: post_id
+  });
 });
 
 
@@ -817,6 +826,37 @@ app.post('/bid/:id', upload.single('bid_file'), (req, res)=>{
       res.send("<script>alert('오류');location.href='/posting';</script>");
     } else{
       res.redirect('/posting');
+    }
+  });
+});
+
+app.post('/ask/:post_id', function(req, res, next){
+  var ask_postid = req.params.post_id;
+  var ask_auth = req.session.name;
+  var ask_date = now();
+  var ask_title = req.body.ask_title;
+  var ask_content = req.body.ask_content;
+  logging('1 : '+ ask_postid);
+  logging('2 : '+ ask_auth);
+  logging('3 : '+ ask_date);
+  logging('4 : '+ ask_title);
+  logging('5 : '+ ask_content);
+
+  var sqlpost = 'SELECT auth FROM post WHERE id=?';
+  client.query(sqlpost, [ask_postid], function(err, auth){
+    if(err){
+      logging('DB오류1');
+    } else{
+      var ask_postauth = auth[0];
+      ask_postauth = ask_postauth.auth;
+      var sql = 'INSERT INTO ask(ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content) VALUES(?, ?, ?, ?, ?, ?)';
+      client.query(sql, [ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content], function(err, result){
+        if(err){
+          logging('DB오류2');
+        }else{
+          res.send("<script>alert('성공적으로 문의를 등록하였습니다!');location.href='/bidOpen';</script>");
+        }
+      });
     }
   });
 });
