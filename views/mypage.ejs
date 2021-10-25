@@ -21,6 +21,9 @@
       <h2>회원정보</h2>
     </div>
     <div id="main">
+      <a href="/myedit"><div id="edit">
+        <p>회원 정보 수정</p>
+      </div></a>
         <table>
           <thead>
             <tr>
@@ -39,7 +42,13 @@
               </tr>
             </tbody>
         </table>
-        <a href="/opening"><div id="open">입찰 결과 등록하기</div></a>
+        <div id="button">
+          <a href="/opening"><div id="open">입찰 결과 등록하기</div></a>
+          <div id="asking">
+            <a href="/answer"><div id="ask">개찰문의 등록 목록</div></a>
+            <a href="/myask"><div id="myask">나의 문의 확인하기</div></a>
+          </div>
+        </div>
         <div id="posts">
           <%
           for(var i = 0; i < result.length; i++){

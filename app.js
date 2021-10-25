@@ -371,13 +371,17 @@ app.get('/edit/:id', function(req, res, next){
 
   var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
   client.query(sql, [id], function(err, row){
-    f = row[0].file;
-    fi = f.split('/');
-    file = fi[2];
-    res.render('edit', {
-      row: row[0],
-      file: file
-    });
+    if(row[0].deadline<now()){
+      res.send("<script>alert('이미 마감일이 지나간 공고는 수정할 수 없습니다!');location.href='/mypage';</script>");
+    } else{
+      f = row[0].file;
+      fi = f.split('/');
+      file = fi[2];
+      res.render('edit', {
+        row: row[0],
+        file: file
+      });
+    }
   });
 });
 
@@ -603,28 +607,32 @@ app.get('/bidOpen/:post_id/:id', function(req, res, next){
 
 app.get('/bid/:id', function(req, res, next){
   var id = req.params.id;
-
-  var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
-  client.query(sql, [id], function(err, row){
-    logging(row[0].deadline);
-    if(row[0].deadline > now()){
-      if(row[0].auth == req.session.name){
-        logging(now() + ' : 자신이 올린 공고에 입찰을 신청하였습니다..');
-        res.send("<script>alert('자신이 올린 공고에는 입찰 신청할 수 없습니다.');location.href='/posting';</script>");
-      } else{
-        f = row[0].file;
-        fi = f.split('/');
-        file = fi[2];
-        res.render('bid', {
-          row: row[0],
-          file: file
-        });
-      }
-    }else{
-      logging(now() + ' : 입찰이 마감된 공고입니다.');
-      res.send("<script>alert('입찰이 마감된 공고입니다.');location.href='/posting';</script>");
-    };
-  });
+  if(req.session.loggedin == true){
+    var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
+    client.query(sql, [id], function(err, row){
+      logging(row[0].deadline);
+      if(row[0].deadline > now()){
+        if(row[0].auth == req.session.name){
+          logging(now() + ' : 자신이 올린 공고에 입찰을 신청하였습니다..');
+          res.send("<script>alert('자신이 올린 공고에는 입찰 신청할 수 없습니다.');location.href='/posting';</script>");
+        } else{
+          f = row[0].file;
+          fi = f.split('/');
+          file = fi[2];
+          res.render('bid', {
+            row: row[0],
+            file: file
+          });
+        }
+      }else{
+        logging(now() + ' : 입찰이 마감된 공고입니다.');
+        res.send("<script>alert('입찰이 마감된 공고입니다.');location.href='/posting';</script>");
+      };
+    });
+  } else{
+    logging(now() + ' : 허가받지 않은 사용자가 입찰 페이지에 접속하였습니다.');
+    res.send("<script>alert('로그인이 필요합니다!');location.href='/login';</script>");
+  }
 });
 
 app.get('/noticePosts', function(req, res, next){
@@ -640,6 +648,157 @@ app.get('/ask/:post_id', function(req, res, next){
   logging(post_id);
   res.render('ask.ejs',{
     post_id: post_id
+  });
+});
+
+app.get('/answer', function(req, res, next){
+  var name = req.session.name;
+  var sql = 'SELECT * FROM ask WHERE ask_postauth=? ORDER BY ask_date DESC';
+  client.query(sql, [name], function(err, result){
+    if(err){
+      logging('DB 오류!');
+    } else{
+      res.render('answer.ejs', {
+        result: result
+      });
+    }
+  });
+});
+
+app.get('/answer/:id', function(req, res, next){
+  var post_id = req.params.id;
+
+  var sql = 'SELECT * FROM ask WHERE ask_id=?';
+  client.query(sql, [post_id], function(err, result){
+    if(err){
+      logging('DB 오류!');
+    } else{
+      if(result[0].ask_askfile){
+        f = result[0].ask_askfile;
+        fi = f.split('/');
+        file = fi[2];
+        if(result[0].ask_answerfile){
+          af = result[0].ask_answerfile;
+          afi = af.split('/');
+          answerfile = afi[2];
+          res.render('answerPost.ejs', {
+            result: result[0],
+            file: file,
+            answerfile: answerfile
+          });
+        } else{
+          res.render('answerPost.ejs', {
+            result: result[0],
+            file: file,
+            answerfile: 0
+          });
+        }
+      } else{
+        if(result[0].ask_answerfile){
+          af = result[0].ask_answerfile;
+          afi = af.split('/');
+          answerfile = afi[2];
+          res.render('answerPost.ejs', {
+            result: result[0],
+            file: 0,
+            answerfile: answerfile
+          });
+        } else{
+          res.render('answerPost.ejs', {
+            result: result[0],
+            file: 0,
+            answerfile: 0
+          });
+        }
+      }
+    }
+  });
+});
+
+app.get('/answering/:id', function(req, res, next){
+  var post_id = req.params.id;
+
+  res.render('answering.ejs',{
+    post_id: post_id
+  });
+});
+
+app.get('/myask', function(req, res, next){
+  var name = req.session.name;
+  var sql = 'SELECT * FROM ask WHERE ask_auth=? ORDER BY ask_date DESC';
+  client.query(sql, [name], function(err, result){
+    if(err){
+      logging('DB 오류!');
+    } else{
+      res.render('myask.ejs', {
+        result: result
+      });
+    }
+  });
+});
+
+app.get('/myaskpost/:id', function(req, res, next){
+  var post_id = req.params.id;
+
+  var sql = 'SELECT * FROM ask WHERE ask_id=?';
+  client.query(sql, [post_id], function(err, result){
+    if(err){
+      logging('DB 오류!');
+    } else{
+      if(result[0].ask_askfile){
+        f = result[0].ask_askfile;
+        fi = f.split('/');
+        file = fi[2];
+        if(result[0].ask_answerfile){
+          af = result[0].ask_answerfile;
+          afi = af.split('/');
+          answerfile = afi[2];
+          res.render('myaskpost.ejs', {
+            result: result[0],
+            file: file,
+            answerfile: answerfile
+          });
+        } else{
+          res.render('myaskpost.ejs', {
+            result: result[0],
+            file: file,
+            answerfile: 0
+          });
+        }
+      } else{
+        if(result[0].ask_answerfile){
+          af = result[0].ask_answerfile;
+          afi = af.split('/');
+          answerfile = afi[2];
+          res.render('myaskpost.ejs', {
+            result: result[0],
+            file: 0,
+            answerfile: answerfile
+          });
+        } else{
+          res.render('myaskpost.ejs', {
+            result: result[0],
+            file: 0,
+            answerfile: 0
+          });
+        }
+      }
+    }
+  });
+});
+
+app.get('/myedit', function(req, res){
+  var idnum = req.session.idnum;
+
+  var sql = 'SELECT * FROM user WHERE id=?';
+  client.query(sql, [idnum], function(err, result){
+    if(err){
+      logging('오류!');
+    }else{
+      res.render('myedit.ejs', {
+        result: result[0]
+      });
+    }
   });
 });
 
@@ -830,35 +989,163 @@ app.post('/bid/:id', upload.single('bid_file'), (req, res)=>{
   });
 });
 
-app.post('/ask/:post_id', function(req, res, next){
+app.post('/ask/:post_id', upload.single('file'), function(req, res, next){
   var ask_postid = req.params.post_id;
   var ask_auth = req.session.name;
   var ask_date = now();
   var ask_title = req.body.ask_title;
   var ask_content = req.body.ask_content;
-  logging('1 : '+ ask_postid);
-  logging('2 : '+ ask_auth);
-  logging('3 : '+ ask_date);
-  logging('4 : '+ ask_title);
-  logging('5 : '+ ask_content);
+  logging(req.file);
 
-  var sqlpost = 'SELECT auth FROM post WHERE id=?';
-  client.query(sqlpost, [ask_postid], function(err, auth){
-    if(err){
-      logging('DB오류1');
-    } else{
-      var ask_postauth = auth[0];
-      ask_postauth = ask_postauth.auth;
-      var sql = 'INSERT INTO ask(ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content) VALUES(?, ?, ?, ?, ?, ?)';
-      client.query(sql, [ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content], function(err, result){
-        if(err){
-          logging('DB오류2');
-        }else{
-          res.send("<script>alert('성공적으로 문의를 등록하였습니다!');location.href='/bidOpen';</script>");
+  if(req.file){
+    logging('파일 있음')
+    var ask_askfile = `/files/${req.file.filename}`;
+    var sqlpost = 'SELECT auth FROM post WHERE id=?';
+    client.query(sqlpost, [ask_postid], function(err, auth){
+      if(err){
+        logging('DB오류1');
+      } else{
+        var ask_postauth = auth[0];
+        ask_postauth = ask_postauth.auth;
+        var sql = 'INSERT INTO ask(ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content, ask_askfile) VALUES(?, ?, ?, ?, ?, ?, ?)';
+        client.query(sql, [ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content, ask_askfile], function(err, result){
+          if(err){
+            logging('DB오류2');
+          }else{
+            res.send("<script>alert('성공적으로 문의를 등록하였습니다!');location.href='/bidOpen';</script>");
+          }
+        });
+      }
+    });
+  } else{
+    logging('파일 없음')
+    var sqlpost = 'SELECT auth FROM post WHERE id=?';
+    client.query(sqlpost, [ask_postid], function(err, auth){
+      if(err){
+        logging('DB오류1');
+      } else{
+        var ask_postauth = auth[0];
+        ask_postauth = ask_postauth.auth;
+        var sql = 'INSERT INTO ask(ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content) VALUES(?, ?, ?, ?, ?, ?)';
+        client.query(sql, [ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content], function(err, result){
+          if(err){
+            logging('DB오류2');
+          }else{
+            res.send("<script>alert('성공적으로 문의를 등록하였습니다!');location.href='/bidOpen';</script>");
+          }
+        });
+      }
+    });
+  }
+});
+
+app.post('/answering/:id', upload.single('file'), function(req, res, next){
+  var post_id = req.params.id;
+  var ask_answer = req.body.ask_content;
+
+  if(req.file){
+    var aks_answerfile = `/files/${req.file.filename}`;
+    var sql = 'UPDATE ask SET ask_answer=?, ask_answerfile=? WHERE ask_id=?';
+    client.query(sql, [ask_answer, aks_answerfile, post_id], function(err, result){
+      if(err){
+        logging('DB오류!');
+      } else{
+        res.send("<script>alert('성공적으로 문의 답변을 등록하였습니다!');location.href='/answer';</script>");
+      }
+    });
+  } else{
+    var sql = 'UPDATE ask SET ask_answer=? WHERE ask_id=?';
+    client.query(sql, [ask_answer, post_id], function(err, result){
+      if(err){
+        logging('DB오류!');
+      } else{
+        res.send("<script>alert('성공적으로 문의 답변을 등록하였습니다!');location.href='/answer';</script>");
+      }
+    });
+  }
+});
+
+app.post('/myedit', function(req, res, next){
+  var ori_id = req.session.userid;
+  var user_id = req.body.id;
+  var ori_password = encryptionPW(req.body.p);
+  var password = req.body.pw;
+  var re_password = req.body.pwre;
+  var name = req.body.name;
+  var phone_num = req.body.txtMobile1 + '-' + req.body.txtMobile2 + '-' + req.body.txtMobile3;
+  var provider = req.body.provider;
+
+  var oripasscheck = 'SELECT * FROM user WHERE user_id=? AND password=?';
+  var idcheck = 'SELECT * FROM user WHERE user_id=?';
+  var namecheck = 'SELECT * FROM user WHERE name=?';
+
+  // 모든 입력이 다 되어있는지 확인
+  if(!ori_id || !user_id || !ori_password || !password || !re_password || !name || !phone_num || !provider){
+    logging(now() + ' : 데이터 입력 값 부족으로 회원 정보 수정 실패!');
+    res.send("<script>alert('값을 전부 입력해주세요.');location.href='/myedit';</script>");
+  } else if(password != re_password) {
+    // 패스워드와 재입력 값 비교
+    logging(now() + ' : 패스워드 값이 서로 회원 정보 수정 실패!');
+    res.send("<script>alert('비밀번호와 재입력 값이 다릅니다!');location.href='/myedit';</script>");
+  } else{
+    // 원래 패스워드가 맞는지 확인
+    client.query(oripasscheck, [ori_id, ori_password], function(err, result){
+      if(err){
+        logging('DB오류!');
+      } else{
+        if(result[0]){
+          // 유저 아이디가 중복이 아닌지 확인
+          client.query(idcheck, [user_id], function(err, results){
+            if(err){
+              logging('오류');
+            } else{
+              if(results[0]){
+                logging(now() + ' : 이미 존재하는 아이디를 입력하여 회원 정보 수정 실패!');
+                res.send("<script>alert('이미 존재하는 아이디입니다, 다른 아이디로 설정해주세요!');location.href='/myedit';</script>");
+              } else{
+                // 이름이 중복이 아닌지 확인
+                client.query(namecheck, [name], function(err, data){
+                  if(err){
+                    logging('오류!');
+                  } else{
+                    if(data[0]){
+                      logging(now() + ' : 이미 존재하는 이름을 입력하여 회원 정보 수정 실패!');
+                      res.send("<script>alert('이미 존재하는 이름입니다, 다른 이름으로 설정해주세요!');location.href='/myedit';</script>");
+                    } else{
+                      // 업데이트 시작
+                      if (provider == "buyer") {  // 체크에 따라 구매자/공급자
+                        provider = 0;
+                      } else{
+                        provider = 1;
+                      }
+                      var sql = 'UPDATE user SET user_id=?, password=?, name=?, provider=?, phone_num=? WHERE id=?';
+                      var id = req.session.idnum;
+                      var passwd = encryptionPW(password);
+                      logging(id);
+                      client.query(sql, [user_id, passwd, name, provider, phone_num, id], function(err, datas){
+                        if(err){
+                          logging('update 오류');
+                        } else{
+                          logging(now() + ' : 회원 정보가 수정되었습니다.');
+                          req.session.userid = user_id;
+                          req.session.name = name;
+                          req.session.prov = provider;
+                          res.send("<script>location.href='/mypage';</script>");
+                        }
+                      });
+                    }
+                  }
+                });
+              }
+            }
+          });
+        } else{
+          logging(now() + ' : 원래 패스워드가 달라 회원 정보 수정 실패!');
+          res.send("<script>alert('기존 비밀번호를 확인하세요!');location.href='/myedit';</script>");
         }
-      });
-    }
-  });
+      }
+    })
+  }
 });
 
 

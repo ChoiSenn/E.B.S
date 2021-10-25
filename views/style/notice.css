@@ -25,10 +25,10 @@ body{background-color: #F7EBED;}
 #menu a:hover{color: #C49AA1;}
 
 /* 본문 */
-#main{font-family: 'Jeju Gothic', sans-serif; text-align: center; margin-top: 40px; margin-bottom: 50px; margin-right: 100px}
+#main{font-family: 'Jeju Gothic', sans-serif; text-align: center; margin-top: 40px; margin-bottom: 200px; margin-right: 100px}
 #main p{text-align: center;}
 #main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
-  border-bottom: 3px solid black; width:120px; margin-bottom: 30px; margin-left: 425px;}
+  border-bottom: 3px solid black; width:120px; margin-bottom: 70px; margin-top: 70px; margin-left: 430px;}
 #search{height: 160px; background-color: #C3909A; margin-bottom: 10px; border-radius: 8px;}
 #search h2{font-size: 36px; padding-top: 40px; float: left; padding-left: 70px; margin-right: 70px; color: #1b1e2b;}
 #sear{padding-top: 16px;}
@@ -65,5 +65,5 @@ body{background-color: #F7EBED;}
 #text{float: left; font-size: 20px; color: #3c2832;}
 
 /* bottom */
-#bottom{margin-top: 200px;}
+#bottom{padding-top: 70px;}
 #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}

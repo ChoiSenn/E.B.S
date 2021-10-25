@@ -25,16 +25,22 @@ body{background-color: #F7EBED;}
 #menu a:hover{color: #C49AA1;}
 
 /* 본문 */
-#main{font-family: 'Jeju Gothic', sans-serif; text-align: center;  margin-top: 70px;}
-#main p{text-align: center;}
+#main{margin-top: 70px; margin-bottom: 10px; font-family: 'Jeju Gothic', sans-serif; text-align: center;}
 #main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
-  border-bottom: 3px solid black; width:200px; margin: 0 auto; margin-bottom: 70px;}
-#table{margin: 0 auto; width: 100%;}
-#head th{padding-bottom: 30px; font-size: 24px;}
-#ta td{padding-bottom: 10px; font-size: 18px;}
-#color a:link{color: #956C78;}
-#color a:visited{color: #956C78;}
-
+  border-bottom: 3px solid black; width:150px; margin: 0 auto;}
+#main h3{margin-top: 10px;}
+#tabel{margin: 0 auto; margin-top: 70px;}
+#id{height: 30px; width:300px; font-size: larger;}
+#pw, #name, #pwre, #idid, #phone_num, #p{height: 30px; width:300px; font-size: larger;}
+#txtMobile1{height: 30px; font-size: larger; padding-bottom: 1px;}
+#txtMobile2, #txtMobile3{height: 26px; font-size: larger;}
+#buyer, #prov{height: 16px; width:30px; font-size: larger; margin-top: 5px;}
+#ch{height: 16px; width: 30px; margin-top: 5px;}
+#class, #che{padding-right: 20px;}
+#btnsign{margin-top: 80px; width: 100px; height: 40px; font-size: larger;
+   font-family: 'Jeju Gothic', sans-serif; color: #F7EBED; background-color: #956C78;
+   border: none; border-radius: 16px; transition-duration: 0.5s;}
+#btnsign:hover{color: #3c2832; background-color: #DCBEC3; transition-duration: 0.5s;}
 
 /* bottom */
 #bottom{margin-top: 80px;}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href = "views/style/myedit.css">
+    <title>회원 정보 수정</title>
+</head>
+<body>
+  <div id="all">
+    <div id="header">
+      <div id="top">
+        <%- include('noLoginMenu') %>
+        <a href="/home">
+          <img src="views/image/logo.png" id="logo">
+        </a>
+      </div>
+      <%- include('menu') %>
+    </div>
+    <div id="main">
+      <h2>회원 정보 수정</h2>
+      <div id="sign">
+        <form method="post">
+          <table align="center" id="tabel">
+            <tbody>
+              <tr>
+                <td><label id="idid">I  D</label></td>
+                <td><input type="TEXT" name="id" id="id" value="<%= result.user_id %>"></td>
+              </tr>
+              <tr>
+                <td><label id="pwpw">기존 비밀번호</label></td>
+                <td><input type="password" name="p" id="p"></td>
+              </tr>
+              <tr>
+                <td><label id="pwpw">비밀번호</label></td>
+                <td><input type="password" name="pw" id="pw"></td>
+              </tr>
+              <tr>
+                <td><label id="pwpw">비밀번호 확인</label></td>
+                <td><input type="password" name="pwre" id="pwre"></td>
+              </tr>
+              <tr>
+                <td><label id="name">이름</label></td>
+                <td><input type="TEXT" name="name" id="name" value="<%= result.name %>"></td>
+              </tr>
+                <td><label id = "phone_num">전화번호</label></td>
+                <td>
+                  <select id="txtMobile1" name="txtMobile1">
+                    <option value="" id="ph">::선택::</option>
+                    <option value="011" id="ph1">011</option>
+                    <option value="016" id="ph2">016</option>
+                    <option value="017" id="ph3">017</option>
+                    <option value="019" id="ph4">019</option>
+                    <option value="010" id="ph5">010</option>
+                  </select>
+                <input type="text" id="txtMobile2" size="4" onkeypress="onlyNumber();" name="txtMobile2" />
+                <input type="text" id="txtMobile3" size="4" name="txtMobile3" />
+              </td>
+              <tr>
+                <td><label id="name">분류</label></td>
+                <td><input type="checkbox" name="provider" value="buyer" id="buyer" onclick='checkOnlyOne(this)'><label id="class">구매자<input type="checkbox" name="provider" value="prov" id="prov" onclick='checkOnlyOne(this)'>공급자</td>
+              </tr>
+            </tbody>
+          </table>
+          <input type="submit" value="수정" id="btnsign">
+        </form>
+      </div>
+    </div>
+    <div id="bottom">
+      <hr>
+      <br>
+      <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function checkOnlyOne(element) {
+
+      const checkboxes
+          = document.getElementsByName("provider");
+
+      checkboxes.forEach((cb) => {
+        cb.checked = false;
+      })
+
+      element.checked = true;
+    }
+
+    function onlyNumber() {
+        if ((event.keyCode < 48) || (event.keyCode > 57))
+            event.returnValue = false;
+    }
+
+    function CheckForm() {
+        if (document.getElementById("txtMobile1").value == "") {
+            window.alert("휴대폰 번호를 선택하시오.");
+            return false;
+        }
+        if (document.getElementById("txtMobile2").value.length != 4) {
+            window.alert("가운데 번호는 4자리로 입력하세요");
+        }
+    }
+  </script>
+</body>
+</html>

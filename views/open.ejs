@@ -42,10 +42,10 @@
                       <td><%= data.bid_firm %></td>
                       <td><%= data.bid_ceo %></td>
                       <td><%= data.bid_price %></td>
-                      <td><a href="/download/<%= file %>"><%= file %></a></td>
+                      <td id="color"><a href="/download/<%= file %>"><%= file %></a></td>
                       <td><%= data.bid_time %></td>
                       <td><%= data.bid_etc %></td>
-                      <td><a href="/bidselect/<%= data.post_id %>/<%= data.id %>">선택</a></td>
+                      <td id="color"><a href="/bidselect/<%= data.post_id %>/<%= data.id %>">선택</a></td>
                     </tr>
                     <% } %>
                 </tbody>
@@ -95,6 +95,8 @@
   #table{margin: 0 auto; width: 100%;}
   #head th{padding-bottom: 30px; font-size: 24px;}
   #ta td{padding-bottom: 10px; font-size: 18px;}
+  #color a:link{color: #956C78;}
+  #color a:visited{color: #956C78;}
 
   /* bottom */
   #bottom{margin-top: 70px;}

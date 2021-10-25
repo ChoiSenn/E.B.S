@@ -29,7 +29,7 @@
                 <th>대표</th>
                 <th>가격</th>
                 <th>입찰 시각</th>
-                <th>기타</th>
+                <th>결과 확인</th>
               </tr>
               </thead>
               <%
@@ -38,12 +38,12 @@
               %>
               <tr id="ta">
                 <input type="hidden" name="id" value="<%= data.post_id %>">
-                <td><a href="/bidOpen/<%= data.post_id %>/<%= data.id %>">상세 보기</a></td>
+                <td id="color"><a href="/post/<%= data.post_id %>">상세 보기</a></td>
                 <td><%= data.bid_firm %></td>
                 <td><%= data.bid_ceo %></td>
                 <td><%= data.bid_price %></td>
                 <td><%= data.bid_time %></td>
-                <td><%= data.bid_etc %></td>
+                <td id="color"><a href="/bidOpen/<%= data.post_id %>/<%= data.id %>">확인</a></td>
               </tr>
               <% } %>
             </tbody>
