@@ -25,7 +25,7 @@ body{background-color: #F7EBED;}
 #menu a:hover{color: #C49AA1;}
 
 /* 본문 */
-#main{font-family: 'Jeju Gothic', sans-serif; text-align: center;  margin-top: 70px;}
+#main{font-family: 'Jeju Gothic', sans-serif; text-align: center;  margin-top: 40px;}
 #main p{text-align: center;}
 #name h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
   border-bottom: 3px solid black; width:140px; margin: 0 auto;
@@ -63,6 +63,12 @@ td{width: 806px; text-align: center; height: 30px;}
 #edit{float: right; background-color: #956C78; border-radius: 8px; margin-right: 7px; margin-bottom: 10px;
   height: 40px; width: 140px;}
 #edit p{padding-top: 12px; color: white; font-size: 18px;}
+#search{margin-top: 30px; background-color: #C3909A; width: 834px; border-radius: 8px; float: right; margin-right: 90px; height: 50px;}
+#sear input, #sear p{float: left;}
+#in{margin-right: 40px;}
+#sear p{margin-left: 10px; margin-right: 10px;}
+#sear{margin-top: 18px;}
+#s{height: 20px; width: 60px; font-size: 14px; font-weight: bolder; margin-left: 50px;}
 
 /* bottom */
 #bottom{margin-top: 40px; float: right; width: 1024px;}

@@ -71,10 +71,10 @@
             <ul>
               <h3>공지사항</h3>
               <br>
-              <li>- 공지가 준비 중입니다.</li>
-              <li>- 공지가 준비 중입니다.</li>
-              <li>- 공지가 준비 중입니다.</li>
-              <li>- 공지가 준비 중입니다.</li>
+              <li>- <a href="/noticePosts4">문의하기 관련 주의사항</a></li>
+              <li>- <a href="/noticePosts3">파일 첨부 관련 주의사항</a></li>
+              <li>- <a href="/noticePosts2">EBS 사이트 이용 공지사항</a></li>
+              <li>- <a href="/noticePosts1">전체 공지사항</a></li>
             </ul>
           </div>
           <div id="post">
@@ -86,7 +86,7 @@
                   var data = result[i];
               %>
                 <li>
-                  <p>- <%= data.title %></p>
+                  <p>- <a href="/post/<%= data.id %>"><%= data.title %></a></p>
                 </li>
                 <br>
               <% } %>

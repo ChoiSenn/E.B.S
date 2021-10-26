@@ -49,6 +49,21 @@
             <a href="/myask"><div id="myask">나의 문의 확인하기</div></a>
           </div>
         </div>
+        <div id="search">
+          <form id="sear" action="/mypage" method="get">
+            <p>작성일 최신순</p>
+            <input type="radio" name="day" value="day_recent" checked='checked' id="in"/>
+            <p>작성일 오래된순</p>
+            <input type="radio" name="day" value="day_latest" id="in"/>
+            <p>마감일 최신순</p>
+            <input type="radio" name="day" value="dead_recent" id="in"/>
+            <p>마감일 오래된순</p>
+            <input type="radio" name="day" value="dead_latest"/>
+            <div id="sub">
+              <input type="submit" name="submit" value="정렬" id="s">
+            </div>
+          </form>
+        </div>
         <div id="posts">
           <%
           for(var i = 0; i < result.length; i++){

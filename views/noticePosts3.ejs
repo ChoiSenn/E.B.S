@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href = "views/style/noticePosting.css">
+    <title>공지사항</title>
+</head>
+<body>
+  <div id="all">
+    <div id="header">
+      <div id="top">
+        <%- include('noLoginMenu') %>
+        <a href="/home">
+          <img src="/views/image/logo.png" id="logo">
+        </a>
+      </div>
+      <%- include('menu') %>
+    </div>
+    <div id="main">
+      <h2 id='title'>파일 첨부 관련 주의사항</h2>
+      <div id="bu">
+        <p id='auth'>관리자</p>
+        <p id= 'date'>2021.10.18</p>
+      </div>
+      <p id='content'>안녕하십니까, 전자 입찰 웹사이트 'EBS'입니다.<br><br>전자 입찰 웹사이트 'EBS'에서는 사용하기 간편하고 보안성이 뛰어난
+        전자 입찰 시스템을 제공해드리고 있습니다. 대기업, 공공기관 뿐만 아니라 중소기업 및 자영업에 종사 중인 일반인까지 이용 가능한 시스템입니다.
+        <br><br>회원가입 및 로그인을 진행 한 뒤, 입찰 공고를 올리고 입찰 과정에 참여해보십시오. 공개키 기반 인증서를 이용한 본인인증과 파일 암호화로써
+        입찰 및 개찰 과정을 보안성 있게 유지합니다.<br><br>기타 문의사항은 아래 연락처로 문의 주십시오.<br>quitechoisen@gmail.com
+      </p>
+    </div>
+    <div id="bottom">
+      <hr>
+      <br>
+      <p>안산대학교 IT응용보안과 2B04 전자입찰시스템</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -337,9 +337,27 @@ app.get('/signUp', function(req, res, next){
 
 // 마이페이지
 app.get('/mypage', function(req, res, next){
-  logging(now() + ' : ' + req.session.loggedin);
+  var order = ' ORDER BY';
+  var day = ' date';
+  var dead = ' deadline';
+  var latest = ' ASC';
+  var recent = ' DESC';
+
+  var sql = 'SELECT * FROM post WHERE auth=?';
+
+  if(req.query.day == 'day_recent'){
+    sql = sql + order + day + recent;
+  } else if (req.query.day == 'dead_recent') {
+    sql = sql + order + dead + recent;
+  } else if (req.query.day == 'dead_latest') {
+    sql = sql + order + dead + latest;
+  } else if(req.query.day == 'day_latest'){
+    sql = sql + order + day + latest;
+  } else{
+    sql = sql + order + day + recent;
+  }
+
   if(req.session.loggedin == true){
-    var sql = 'SELECT * FROM post WHERE auth=? ORDER BY date DESC';
     client.query(sql, [req.session.name], function(err, result){
       res.render('mypage.ejs',{
         user_id: req.session.userid,
@@ -635,12 +653,27 @@ app.get('/bid/:id', function(req, res, next){
   }
 });
 
-app.get('/noticePosts', function(req, res, next){
-  res.render('noticePosts.ejs');
+app.get('/noticePosts1', function(req, res, next){
+  res.render('noticePosts1.ejs');
+});
+app.get('/noticePosts2', function(req, res, next){
+  res.render('noticePosts2.ejs');
+});
+app.get('/noticePosts3', function(req, res, next){
+  res.render('noticePosts3.ejs');
+});
+app.get('/noticePosts4', function(req, res, next){
+  res.render('noticePosts4.ejs');
 });
 
 app.get('/A1', function(req, res, next){
   res.render('A1.ejs');
+});
+app.get('/A2', function(req, res, next){
+  res.render('A2.ejs');
+});
+app.get('/A3', function(req, res, next){
+  res.render('A3.ejs');
 });
 
 app.get('/ask/:post_id', function(req, res, next){

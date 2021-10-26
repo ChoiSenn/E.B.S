@@ -54,6 +54,8 @@ body{background-color: #F7EBED;}
   margin-top: 30px; margin-bottom: 50px;}
 #notice{float: left;}
 #post li p{float:left;}
+li a:link{color: black;}
+li a:visited{color: black;}
 
 /* bottom */
 #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}
