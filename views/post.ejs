@@ -27,7 +27,7 @@
         <p id='content'><%= row.content %></p>
         <p id='deadline'>마감기한 : <%= row.deadline %></p>
         <p id='a'>(자세한 설명은 첨부파일을 확인하여주세요.)</p>
-        <a href="/download/<%= file %>" id="color"><p><%= file %></p></a>
+        <a href="/download/<%= row.id %>/<%= file %>" id="color"><p><%= file %></p></a>
         <a href="/bid/<%= row.id %>"><div id="bid">입찰 등록하기</div></a>
     </div>
     <div id="bottom">
