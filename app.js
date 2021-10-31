@@ -258,6 +258,10 @@ app.get('/posting', function(req, res, next){
 app.get('/post/:id', function(req, res, next){
   var id = req.params.id;
 
+  var files = req.session.files;
+  console.log('파일: ', files);
+  fs.unlink(files, function() {});
+
   var sqlcount = 'UPDATE post SET count=count+1 where id=?';
   client.query(sqlcount, [id], function(err, result){
     if(err){
@@ -294,6 +298,8 @@ app.get('/download/:id/:file_name', function(req, res, next) {
       console.log("복호화파일: ", decrPathNfile);
       console.log("암호화파일: ", encrPathNfile);
       var decfile = decrPathNfile;
+      var files = decrPathNfile;
+      req.session.files = files;
 
       if (fs.existsSync(decrPathNfile)) {  // 복호화 파일이 있으면 에러발생, 검사-삭제후 실행코드 필요!!
          fs.unlink(decrPathNfile, function() {}); // 복호화 파일 존재시 삭제
@@ -1029,6 +1035,8 @@ app.post('/postW/write', upload.single('file'), (req, res)=>{
   f.encrypt(key);
   encrPathNfile = f.encryptFilePath;  // 암호화된 새 파일명(경로포함) 저장
   console.log("encrypt sync done");
+
+  fs.unlink(orgPathNfile, function() {}); // 암호화 전 파일 삭제
 
   if(deadline < now()){
     logging(now() + ' : 날짜 입력 오류!');
