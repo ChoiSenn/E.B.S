@@ -24,7 +24,7 @@
         </div>
         <p id='content'><%= result.ask_content %></p>
         <% if(file){ %>
-        <a href="/download/<%= file %>" id="color"><p><%= file %></p></a>
+        <a href="/askdownload/<%= result.ask_id %>/<%= file %>" id="color"><p><%= file %></p></a>
         <% } else{} %>
         <%
           if(result.ask_answer){
@@ -34,7 +34,7 @@
         <br>
         <p id="content"><%= result.ask_answer %></p>
         <% if(answerfile){ %>
-        <a href="/download/<%= answerfile %>" id="color"><p><%= answerfile %></p></a>
+        <a href="/answerdownload/<%= result.ask_id %>/<%= answerfile %>" id="color"><p><%= answerfile %></p></a>
         <% } else{} %>
         <%
       } else {

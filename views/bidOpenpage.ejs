@@ -26,7 +26,7 @@
       <p id='content'><%= result.content %></p>
       <p id='deadline'>마감기한 : <%= result.deadline %></p>
       <p id='a'>(자세한 설명은 첨부파일을 확인하여주세요.)</p>
-      <a href="/download/<%= file %>"><p><%= file %></p></a>
+      <a href="/download/<%=result.id%>/<%= file %>"><p><%= file %></p></a>
       <br><br>
       <hr>
       <br><br><br><br>

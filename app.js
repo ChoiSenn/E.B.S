@@ -105,8 +105,10 @@ app.use(session({
 //var loggedin = false;
 var loginid = -1;
 
-// 파일 암호화 키
-let key = 'passwd';
+// 파일 암호화 키 (하드코딩)
+let passwordkey = require("./enc.js");
+passwordkey = String(Object.values(passwordkey)).substring(7, 50);
+let key = CryptoJS.AES.decrypt(passwordkey,"key").toString(CryptoJS.enc.Utf8);
 
 // 파일 경로 저장
 var storage = multer.diskStorage({
@@ -258,10 +260,6 @@ app.get('/posting', function(req, res, next){
 app.get('/post/:id', function(req, res, next){
   var id = req.params.id;
 
-  var files = req.session.files;
-  console.log('파일: ', files);
-  fs.unlink(files, function() {});
-
   var sqlcount = 'UPDATE post SET count=count+1 where id=?';
   client.query(sqlcount, [id], function(err, result){
     if(err){
@@ -299,7 +297,6 @@ app.get('/download/:id/:file_name', function(req, res, next) {
       console.log("암호화파일: ", encrPathNfile);
       var decfile = decrPathNfile;
       var files = decrPathNfile;
-      req.session.files = files;
 
       if (fs.existsSync(decrPathNfile)) {  // 복호화 파일이 있으면 에러발생, 검사-삭제후 실행코드 필요!!
          fs.unlink(decrPathNfile, function() {}); // 복호화 파일 존재시 삭제
@@ -326,6 +323,178 @@ app.get('/download/:id/:file_name', function(req, res, next) {
         } else {
           res.send('해당 파일이 없습니다.');
           return;
+        }
+        if (fs.existsSync(files)) {
+           console.log("기존 복호화 파일 삭제");
+           fs.unlink(files, function() {}); // 복호화 파일 존재시 삭제
+        }
+      } catch (e) { // 에러 발생시
+        console.log(e);
+        res.send('파일을 다운로드하는 중에 에러가 발생하였습니다.');
+        return;
+      }
+    }
+  });
+});
+
+app.get('/biddownload/:id/:file_name', function(req, res, next) {
+  let decrfilePath = 'decFiles/'; // 복호화 파일 저장 경로
+  var post_id = req.params.id;
+  var sql = 'SELECT * FROM bidding WHERE id=?';
+  client.query(sql, [post_id], function(err, result){
+    if(err){
+      console.log('오류');
+    } else{
+      var meme = result[0].bid_filememe;
+      let decrPathNfile = decrfilePath + req.params.file_name + meme;  // 복호화 파일 경로+파일명 저장용
+      let encrPathNfile = 'encFiles/' + req.params.file_name + '.crypt';
+      console.log("복호화폴더: ", decrfilePath);
+      console.log("복호화파일: ", decrPathNfile);
+      console.log("암호화파일: ", encrPathNfile);
+      var decfile = decrPathNfile;
+      var files = decrPathNfile;
+
+      if (fs.existsSync(decrPathNfile)) {  // 복호화 파일이 있으면 에러발생, 검사-삭제후 실행코드 필요!!
+         fs.unlink(decrPathNfile, function() {}); // 복호화 파일 존재시 삭제
+         console.log("기존 복호화 파일 삭제");
+      }
+      let f = new encrypt.FileEncrypt(encrPathNfile, decrfilePath);  // encryptPathNfile = 암호화된 새 파일명(경로포함), 서로 다른 프로그램에서 호출시 encryptPathNfile를 넘겨줄 것
+      f.openSourceFile();
+      decrPathNfile = f.decrypt(key);    // 암호화 키로 파일 복호화 , 파일명까지 원상복구 시킴
+      console.log("decrypt sync done");
+
+      var upload_folder = 'decFiles/';
+      var file = decfile; // ex) /upload/files/sample.txt
+
+      try {
+        if (fs.existsSync(file)) { // 파일이 존재하는지 체크
+          var filename = path.basename(file); // 파일 경로에서 파일명(확장자포함)만 추출
+          var mimetype = mime.lookup(file); // 파일의 타입(형식)을 가져옴
+
+          res.setHeader('Content-disposition', 'attachment; filename=' + filename); // 다운받아질 파일명 설정
+          res.setHeader('Content-type', mimetype); // 파일 형식 지정
+
+          var filestream = fs.createReadStream(file);
+          filestream.pipe(res);
+        } else {
+          res.send('해당 파일이 없습니다.');
+          return;
+        }
+        if (fs.existsSync(files)) {
+           console.log("기존 복호화 파일 삭제");
+           fs.unlink(files, function() {}); // 복호화 파일 존재시 삭제
+        }
+      } catch (e) { // 에러 발생시
+        console.log(e);
+        res.send('파일을 다운로드하는 중에 에러가 발생하였습니다.');
+        return;
+      }
+    }
+  });
+});
+
+app.get('/askdownload/:id/:file_name', function(req, res, next) {
+  let decrfilePath = 'decFiles/'; // 복호화 파일 저장 경로
+  var post_id = req.params.id;
+  var sql = 'SELECT * FROM ask WHERE ask_id=?';
+  client.query(sql, [post_id], function(err, result){
+    if(err){
+      console.log('오류');
+    } else{
+      var meme = result[0].ask_askfilememe;
+      let decrPathNfile = decrfilePath + req.params.file_name + meme;  // 복호화 파일 경로+파일명 저장용
+      let encrPathNfile = 'encFiles/' + req.params.file_name + '.crypt';
+      console.log("복호화폴더: ", decrfilePath);
+      console.log("복호화파일: ", decrPathNfile);
+      console.log("암호화파일: ", encrPathNfile);
+      var decfile = decrPathNfile;
+      var files = decrPathNfile;
+
+      if (fs.existsSync(decrPathNfile)) {  // 복호화 파일이 있으면 에러발생, 검사-삭제후 실행코드 필요!!
+         fs.unlink(decrPathNfile, function() {}); // 복호화 파일 존재시 삭제
+         console.log("기존 복호화 파일 삭제");
+      }
+      let f = new encrypt.FileEncrypt(encrPathNfile, decrfilePath);  // encryptPathNfile = 암호화된 새 파일명(경로포함), 서로 다른 프로그램에서 호출시 encryptPathNfile를 넘겨줄 것
+      f.openSourceFile();
+      decrPathNfile = f.decrypt(key);    // 암호화 키로 파일 복호화 , 파일명까지 원상복구 시킴
+      console.log("decrypt sync done");
+
+      var upload_folder = 'decFiles/';
+      var file = decfile; // ex) /upload/files/sample.txt
+
+      try {
+        if (fs.existsSync(file)) { // 파일이 존재하는지 체크
+          var filename = path.basename(file); // 파일 경로에서 파일명(확장자포함)만 추출
+          var mimetype = mime.lookup(file); // 파일의 타입(형식)을 가져옴
+
+          res.setHeader('Content-disposition', 'attachment; filename=' + filename); // 다운받아질 파일명 설정
+          res.setHeader('Content-type', mimetype); // 파일 형식 지정
+
+          var filestream = fs.createReadStream(file);
+          filestream.pipe(res);
+        } else {
+          res.send('해당 파일이 없습니다.');
+          return;
+        }
+        if (fs.existsSync(files)) {
+           console.log("기존 복호화 파일 삭제");
+           fs.unlink(files, function() {}); // 복호화 파일 존재시 삭제
+        }
+      } catch (e) { // 에러 발생시
+        console.log(e);
+        res.send('파일을 다운로드하는 중에 에러가 발생하였습니다.');
+        return;
+      }
+    }
+  });
+});
+
+app.get('/answerdownload/:id/:file_name', function(req, res, next) {
+  let decrfilePath = 'decFiles/'; // 복호화 파일 저장 경로
+  var post_id = req.params.id;
+  var sql = 'SELECT * FROM ask WHERE ask_id=?';
+  client.query(sql, [post_id], function(err, result){
+    if(err){
+      console.log('오류');
+    } else{
+      var meme = result[0].ask_answerfilememe;
+      let decrPathNfile = decrfilePath + req.params.file_name + meme;  // 복호화 파일 경로+파일명 저장용
+      let encrPathNfile = 'encFiles/' + req.params.file_name + '.crypt';
+      console.log("복호화폴더: ", decrfilePath);
+      console.log("복호화파일: ", decrPathNfile);
+      console.log("암호화파일: ", encrPathNfile);
+      var decfile = decrPathNfile;
+      var files = decrPathNfile;
+
+      if (fs.existsSync(decrPathNfile)) {  // 복호화 파일이 있으면 에러발생, 검사-삭제후 실행코드 필요!!
+         fs.unlink(decrPathNfile, function() {}); // 복호화 파일 존재시 삭제
+         console.log("기존 복호화 파일 삭제");
+      }
+      let f = new encrypt.FileEncrypt(encrPathNfile, decrfilePath);  // encryptPathNfile = 암호화된 새 파일명(경로포함), 서로 다른 프로그램에서 호출시 encryptPathNfile를 넘겨줄 것
+      f.openSourceFile();
+      decrPathNfile = f.decrypt(key);    // 암호화 키로 파일 복호화 , 파일명까지 원상복구 시킴
+      console.log("decrypt sync done");
+
+      var upload_folder = 'decFiles/';
+      var file = decfile; // ex) /upload/files/sample.txt
+
+      try {
+        if (fs.existsSync(file)) { // 파일이 존재하는지 체크
+          var filename = path.basename(file); // 파일 경로에서 파일명(확장자포함)만 추출
+          var mimetype = mime.lookup(file); // 파일의 타입(형식)을 가져옴
+
+          res.setHeader('Content-disposition', 'attachment; filename=' + filename); // 다운받아질 파일명 설정
+          res.setHeader('Content-type', mimetype); // 파일 형식 지정
+
+          var filestream = fs.createReadStream(file);
+          filestream.pipe(res);
+        } else {
+          res.send('해당 파일이 없습니다.');
+          return;
+        }
+        if (fs.existsSync(files)) {
+           console.log("기존 복호화 파일 삭제");
+           fs.unlink(files, function() {}); // 복호화 파일 존재시 삭제
         }
       } catch (e) { // 에러 발생시
         console.log(e);
@@ -513,9 +682,10 @@ app.get('/open/:id', function(req, res, next){
       if(result.length != 0){
         var sqlpost = 'SELECT title FROM post WHERE id=?';
         client.query(sqlpost, [id], function(err, data){
-          var f = result[0].bid_file;
-          fi = f.split('/');
-          file = fi[2];
+          f = result[0].bid_file;
+          fi = f.split('\\');
+          fil = fi[1];
+          file = fil.split('.');
 
           var t = JSON.stringify(data[0]);
           var title = t.substring(10, t.length-2);
@@ -534,7 +704,7 @@ app.get('/open/:id', function(req, res, next){
             res.render('open.ejs',{
               result: result,
               title: title+'의',
-              file: file,
+              file: file[0],
               id: id
             });
           }
@@ -579,14 +749,15 @@ app.get('/bidOpen', function(req, res, next){
   if(req.session.loggedin == true){
     var sql = 'SELECT * FROM bidding WHERE auth_id=? ORDER BY bid_time DESC';
     client.query(sql, [req.session.idnum], function(err, result){
-      if(result){
-        var f = result[0].bid_file;
-        fi = f.split('/');
-        file = fi[2];
+      if(result[0]){
+        f = result[0].bid_file;
+        fi = f.split('\\');
+        fil = fi[1];
+        file = fil.split('.');
 
         res.render('bidOpen.ejs',{
           result: result,
-          file: file
+          file: file[0]
         });
       }else{
         logging(now() + ' : 아직 참여한 입찰이 없습니다.');
@@ -629,15 +800,16 @@ app.get('/bidOpen/:post_id/:id', function(req, res, next){
                 }
 
                 if(select > 0){
-                  var f = result[0].file;
-                  fi = f.split('/');
-                  file = fi[2];
+                  f = result[0].file;
+                  fi = f.split('\\');
+                  fil = fi[1];
+                  file = fil.split('.');
 
                   logging(now() + ' : 개찰결과 확인 페이지에 접속하였습니다.');
                   res.render('bidOpenpage.ejs',{
                     result: result[0],
                     results: results[0],
-                    file: file,
+                    file: file[0],
                     post_id: post_id
                   });
                 } else {
@@ -667,12 +839,13 @@ app.get('/bid/:id', function(req, res, next){
           logging(now() + ' : 자신이 올린 공고에 입찰을 신청하였습니다..');
           res.send("<script>alert('자신이 올린 공고에는 입찰 신청할 수 없습니다.');location.href='/posting';</script>");
         } else{
-          f = row[0].file;
-          fi = f.split('/');
-          file = fi[2];
+          f = result[0].bid_file;
+          fi = f.split('\\');
+          fil = fi[1];
+          file = fil.split('.');
           res.render('bid', {
             row: row[0],
-            file: file
+            file: file[0]
           });
         }
       }else{
@@ -741,33 +914,36 @@ app.get('/answer/:id', function(req, res, next){
     } else{
       if(result[0].ask_askfile){
         f = result[0].ask_askfile;
-        fi = f.split('/');
-        file = fi[2];
+        fi = f.split('\\');
+        fil = fi[1];
+        file = fil.split('.');
         if(result[0].ask_answerfile){
-          af = result[0].ask_answerfile;
-          afi = af.split('/');
-          answerfile = afi[2];
+          a = result[0].ask_answerfile;
+          af = a.split('\\');
+          afi = af[1];
+          answerfile = afi.split('.');
           res.render('answerPost.ejs', {
             result: result[0],
-            file: file,
-            answerfile: answerfile
+            file: file[0],
+            answerfile: answerfile[0]
           });
         } else{
           res.render('answerPost.ejs', {
             result: result[0],
-            file: file,
+            file: file[0],
             answerfile: 0
           });
         }
       } else{
         if(result[0].ask_answerfile){
-          af = result[0].ask_answerfile;
-          afi = af.split('/');
-          answerfile = afi[2];
+          a = result[0].ask_answerfile;
+          af = a.split('\\');
+          afi = af[1];
+          answerfile = afi.split('.');
           res.render('answerPost.ejs', {
             result: result[0],
             file: 0,
-            answerfile: answerfile
+            answerfile: answerfile[0]
           });
         } else{
           res.render('answerPost.ejs', {
@@ -813,33 +989,36 @@ app.get('/myaskpost/:id', function(req, res, next){
     } else{
       if(result[0].ask_askfile){
         f = result[0].ask_askfile;
-        fi = f.split('/');
-        file = fi[2];
+        fi = f.split('\\');
+        fil = fi[1];
+        file = fil.split('.');
         if(result[0].ask_answerfile){
-          af = result[0].ask_answerfile;
-          afi = af.split('/');
-          answerfile = afi[2];
+          a = result[0].ask_answerfile;
+          af = a.split('\\');
+          afi = af[1];
+          answerfile = afi.split('.');
           res.render('myaskpost.ejs', {
             result: result[0],
-            file: file,
-            answerfile: answerfile
+            file: file[0],
+            answerfile: answerfile[0]
           });
         } else{
           res.render('myaskpost.ejs', {
             result: result[0],
-            file: file,
+            file: file[0],
             answerfile: 0
           });
         }
       } else{
         if(result[0].ask_answerfile){
-          af = result[0].ask_answerfile;
-          afi = af.split('/');
-          answerfile = afi[2];
+          a = result[0].ask_answerfile;
+          af = a.split('\\');
+          afi = af[1];
+          answerfile = afi.split('.');
           res.render('myaskpost.ejs', {
             result: result[0],
             file: 0,
-            answerfile: answerfile
+            answerfile: answerfile[0]
           });
         } else{
           res.render('myaskpost.ejs', {
@@ -1059,8 +1238,6 @@ app.post('/postW/write', upload.single('file'), (req, res)=>{
 app.post('/bid/:id', upload.single('bid_file'), (req, res)=>{
   var post_id = req.body.id;
   var auth_id = req.session.idnum;
-  logging(post_id);
-  logging(auth_id);
 
   var bid_firm = req.body.bid_firm;
   var bid_ceo = req.body.bid_ceo;
@@ -1068,12 +1245,37 @@ app.post('/bid/:id', upload.single('bid_file'), (req, res)=>{
   var bid_etc = req.body.bid_etc;
   var bid_file = `/files/${req.file.filename}`;
 
-  var datas = [post_id, auth_id, bid_firm, bid_ceo, bid_price, bid_file, now(), bid_etc];
-  var sql = 'INSERT INTO bidding(post_id, auth_id, bid_firm, bid_ceo, bid_price, bid_file, bid_time, bid_etc) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
+  let orgFilename  = req.file.filename;
+  let extension    = orgFilename.substr(-4, 4);  // 파일 확장자 ==> txt, jpg, png, mp4 암호화 및 복호화 OK
+  let filename     = orgFilename.replace(extension, '');  // 원본 파일
+  let orgfilePath  = 'files/';    // 원본 파일 경로
+  let encrfilePath = 'encFiles/'; // 암호화 파일 저장 경로
+  let decrfilePath = 'decFiles/'; // 복호화 파일 저장 경로
+
+  let orgPathNfile = orgfilePath  + orgFilename;  // 원본 파일 경로+파일명
+  let encrPathNfile= encrfilePath + filename + '.crypt'; // 암호화 파일 경로+파일명 저장용
+
+  console.log("원 본 폴더: ", orgfilePath);
+  console.log("원 본 파일: ", orgPathNfile);
+  console.log("암호화폴더: ", encrfilePath);
+  console.log("암호화파일: ", encrPathNfile);
+
+  // 암호화 저장
+  if (fs.existsSync(encrPathNfile)) {  // 암호화 키로 파일 암호화, 암호화 파일이 있으면 에러발생, 검사-삭제후 실행코드 필요!!
+     console.log("기존 암호화 파일 삭제 ");
+     fs.unlink(encrPathNfile, function() {}); // 암호화 파일 존재시 삭제
+  }
+  let f = new encrypt.FileEncrypt(orgPathNfile, encrfilePath, '.crypt', false); // false=파일명 변경 안함, true=무작위 파일명 생성
+  f.openSourceFile();
+  f.encrypt(key);
+  encrPathNfile = f.encryptFilePath;  // 암호화된 새 파일명(경로포함) 저장
+  console.log("encrypt sync done");
+
+  fs.unlink(orgPathNfile, function() {}); // 암호화 전 파일 삭제
+
+  var datas = [post_id, auth_id, bid_firm, bid_ceo, bid_price, encrPathNfile, now(), bid_etc, extension];
+  var sql = 'INSERT INTO bidding(post_id, auth_id, bid_firm, bid_ceo, bid_price, bid_file, bid_time, bid_etc, bid_filememe) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)';
   client.query(sql, datas, function(err, result){
-    logging('sql '+sql);
-    logging('datas '+datas);
-    logging('result '+result);
     if(err){
       logging(now() + ' : 입찰 신청 DB 오류!');
       res.send("<script>alert('오류');location.href='/posting';</script>");
@@ -1094,6 +1296,34 @@ app.post('/ask/:post_id', upload.single('file'), function(req, res, next){
   if(req.file){
     logging('파일 있음')
     var ask_askfile = `/files/${req.file.filename}`;
+    let orgFilename  = req.file.filename;
+    let extension    = orgFilename.substr(-4, 4);  // 파일 확장자 ==> txt, jpg, png, mp4 암호화 및 복호화 OK
+    let filename     = orgFilename.replace(extension, '');  // 원본 파일
+    let orgfilePath  = 'files/';    // 원본 파일 경로
+    let encrfilePath = 'encFiles/'; // 암호화 파일 저장 경로
+    let decrfilePath = 'decFiles/'; // 복호화 파일 저장 경로
+
+    let orgPathNfile = orgfilePath  + orgFilename;  // 원본 파일 경로+파일명
+    let encrPathNfile= encrfilePath + filename + '.crypt'; // 암호화 파일 경로+파일명 저장용
+
+    console.log("원 본 폴더: ", orgfilePath);
+    console.log("원 본 파일: ", orgPathNfile);
+    console.log("암호화폴더: ", encrfilePath);
+    console.log("암호화파일: ", encrPathNfile);
+
+    // 암호화 저장
+    if (fs.existsSync(encrPathNfile)) {  // 암호화 키로 파일 암호화, 암호화 파일이 있으면 에러발생, 검사-삭제후 실행코드 필요!!
+       console.log("기존 암호화 파일 삭제 ");
+       fs.unlink(encrPathNfile, function() {}); // 암호화 파일 존재시 삭제
+    }
+    let f = new encrypt.FileEncrypt(orgPathNfile, encrfilePath, '.crypt', false); // false=파일명 변경 안함, true=무작위 파일명 생성
+    f.openSourceFile();
+    f.encrypt(key);
+    encrPathNfile = f.encryptFilePath;  // 암호화된 새 파일명(경로포함) 저장
+    console.log("encrypt sync done");
+
+    fs.unlink(orgPathNfile, function() {}); // 암호화 전 파일 삭제
+
     var sqlpost = 'SELECT auth FROM post WHERE id=?';
     client.query(sqlpost, [ask_postid], function(err, auth){
       if(err){
@@ -1101,8 +1331,8 @@ app.post('/ask/:post_id', upload.single('file'), function(req, res, next){
       } else{
         var ask_postauth = auth[0];
         ask_postauth = ask_postauth.auth;
-        var sql = 'INSERT INTO ask(ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content, ask_askfile) VALUES(?, ?, ?, ?, ?, ?, ?)';
-        client.query(sql, [ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content, ask_askfile], function(err, result){
+        var sql = 'INSERT INTO ask(ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content, ask_askfile, ask_askfilememe) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
+        client.query(sql, [ask_postid, ask_postauth, ask_auth, ask_date, ask_title, ask_content, encrPathNfile, extension], function(err, result){
           if(err){
             logging('DB오류2');
           }else{
@@ -1139,8 +1369,36 @@ app.post('/answering/:id', upload.single('file'), function(req, res, next){
 
   if(req.file){
     var aks_answerfile = `/files/${req.file.filename}`;
-    var sql = 'UPDATE ask SET ask_answer=?, ask_answerfile=? WHERE ask_id=?';
-    client.query(sql, [ask_answer, aks_answerfile, post_id], function(err, result){
+    let orgFilename  = req.file.filename;
+    let extension    = orgFilename.substr(-4, 4);  // 파일 확장자 ==> txt, jpg, png, mp4 암호화 및 복호화 OK
+    let filename     = orgFilename.replace(extension, '');  // 원본 파일
+    let orgfilePath  = 'files/';    // 원본 파일 경로
+    let encrfilePath = 'encFiles/'; // 암호화 파일 저장 경로
+    let decrfilePath = 'decFiles/'; // 복호화 파일 저장 경로
+
+    let orgPathNfile = orgfilePath  + orgFilename;  // 원본 파일 경로+파일명
+    let encrPathNfile= encrfilePath + filename + '.crypt'; // 암호화 파일 경로+파일명 저장용
+
+    console.log("원 본 폴더: ", orgfilePath);
+    console.log("원 본 파일: ", orgPathNfile);
+    console.log("암호화폴더: ", encrfilePath);
+    console.log("암호화파일: ", encrPathNfile);
+
+    // 암호화 저장
+    if (fs.existsSync(encrPathNfile)) {  // 암호화 키로 파일 암호화, 암호화 파일이 있으면 에러발생, 검사-삭제후 실행코드 필요!!
+       console.log("기존 암호화 파일 삭제 ");
+       fs.unlink(encrPathNfile, function() {}); // 암호화 파일 존재시 삭제
+    }
+    let f = new encrypt.FileEncrypt(orgPathNfile, encrfilePath, '.crypt', false); // false=파일명 변경 안함, true=무작위 파일명 생성
+    f.openSourceFile();
+    f.encrypt(key);
+    encrPathNfile = f.encryptFilePath;  // 암호화된 새 파일명(경로포함) 저장
+    console.log("encrypt sync done");
+
+    fs.unlink(orgPathNfile, function() {}); // 암호화 전 파일 삭제
+
+    var sql = 'UPDATE ask SET ask_answer=?, ask_answerfile=?, ask_answerfilememe=? WHERE ask_id=?';
+    client.query(sql, [ask_answer, encrPathNfile, extension, post_id], function(err, result){
       if(err){
         logging('DB오류!');
       } else{
