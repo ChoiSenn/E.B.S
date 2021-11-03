@@ -65,7 +65,6 @@ function sqlconnect(){
     }else{
       logging('DBMS Connected !!');
     }
-  client.on('error', function() { sqlconnect(); });
     // user/post 테이블 없으면 생성 코드 차후 추가
   });
 }
