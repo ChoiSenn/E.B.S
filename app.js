@@ -47,11 +47,11 @@ function logging(logstr){
 // MySQL 데이터베이스 구현
 try{
   var client = mysql.createConnection({
-    host: 'localhost',
+    host: 'us-cdbr-east-04.cleardb.com',
     port: 3306,
-    user: 'root',
-    password: '123456',
-    database: 'ebs',
+    user: 'bfeaf817fb6eca',
+    password: 'ce1bb749',
+    database: 'heroku_878f6cb9b7d2488',
     dateStrings: 'date'
   });
 } catch(e){
