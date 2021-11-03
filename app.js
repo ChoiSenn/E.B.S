@@ -55,13 +55,11 @@ var client = mysql.createConnection({
 
 // MySQL 데이터베이스 구현
 function handleDisconnect(){
-  client.connect((err) => {
+  client.connect(function(err){
     if(err) {
-      console.log('error db : ', err);
+      console.log('error when connecting db : ', err);
       setTimeout(handleDisconnect, 2000);
-    }else{
-    logging('DBMS Connected !!');
-  }
+    }
     // user/post 테이블 없으면 생성 코드 차후 추가
   });
 
