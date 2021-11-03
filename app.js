@@ -45,28 +45,31 @@ function logging(logstr){
 }
 
 // MySQL 데이터베이스 구현
-try{
-  var client = mysql.createConnection({
-    host: 'us-cdbr-east-04.cleardb.com',
-    port: 3306,
-    user: 'bfeaf817fb6eca',
-    password: 'ce1bb749',
-    database: 'heroku_878f6cb9b7d2488',
-    dateStrings: 'date'
-  });
-} catch(e){
-  console.log(e.name);
-  console.log(e.message);
-}
-client.connect((err) => {
-  if(err) {
-    throw err;
-  }else{
-    logging('DBMS Connected !!');
+function sqlconnect(){
+  try{
+    var client = mysql.createConnection({
+      host: 'us-cdbr-east-04.cleardb.com',
+      port: 3306,
+      user: 'bfeaf817fb6eca',
+      password: 'ce1bb749',
+      database: 'heroku_878f6cb9b7d2488',
+      dateStrings: 'date'
+    });
+  } catch(e){
+    console.log(e.name);
+    console.log(e.message);
   }
-client.on('error', function() {});
-  // user/post 테이블 없으면 생성 코드 차후 추가
-});
+  client.connect((err) => {
+    if(err) {
+      throw err;
+    }else{
+      logging('DBMS Connected !!');
+    }
+  client.on('error', function() { sqlconnect(); });
+    // user/post 테이블 없으면 생성 코드 차후 추가
+  });
+}
+
 
 // 서버 생성
 var app = express();
