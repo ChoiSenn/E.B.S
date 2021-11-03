@@ -44,28 +44,36 @@ function logging(logstr){
   });
 }
 
-// MySQL 데이터베이스 구현
-  try{
-    var client = mysql.createConnection({
-      host: 'us-cdbr-east-04.cleardb.com',
-      port: 3306,
-      user: 'bfeaf817fb6eca',
-      password: 'ce1bb749',
-      database: 'heroku_878f6cb9b7d2488',
-      dateStrings: 'date'
-    });
-  } catch(e){
-    console.log(e.name);
-    console.log(e.message);
-  }
-  client.connect((err) => {
+
+
+var client = mysql.createConnection({
+  host: 'us-cdbr-east-04.cleardb.com',
+  port: 3306,
+  user: 'bfeaf817fb6eca',
+  password: 'ce1bb749',
+  database: 'heroku_878f6cb9b7d2488',
+  dateStrings: 'date'
+});
+
+function handleDisconnect() {
+  client.connect(function(err) {
     if(err) {
-      throw err;
-    }else{
-      logging('DBMS Connected !!');
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 2000);
     }
-    // user/post 테이블 없으면 생성 코드 차후 추가
   });
+
+  client.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+      return handleDisconnect();
+    } else {
+      throw err;
+    }
+  });
+}
+
+handleDisconnect();
 
 
 // 서버 생성
