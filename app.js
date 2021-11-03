@@ -44,21 +44,17 @@ function logging(logstr){
   });
 }
 
+var client = mysql.createConnection({
+  host: 'us-cdbr-east-04.cleardb.com',
+  port: 3306,
+  user: 'bfeaf817fb6eca',
+  password: 'ce1bb749',
+  database: 'heroku_878f6cb9b7d2488',
+  dateStrings: 'date'
+});
+
 // MySQL 데이터베이스 구현
 function handleDisconnect(){
-  try{
-    var client = mysql.createConnection({
-      host: 'us-cdbr-east-04.cleardb.com',
-      port: 3306,
-      user: 'bfeaf817fb6eca',
-      password: 'ce1bb749',
-      database: 'heroku_878f6cb9b7d2488',
-      dateStrings: 'date'
-    });
-  } catch(e){
-    console.log(e.name);
-    console.log(e.message);
-  }
   client.connect((err) => {
     if(err) {
       console.log('error db : ', err);
