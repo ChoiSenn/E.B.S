@@ -1525,7 +1525,7 @@ app.use(function(err, req, res, next) {
 var http = require('http').Server(app);
 
 // 서버 동작
-http.listen(80, function(){
+http.listen(3000, function(){
   console.log('server Running!! >> http://localhost:80');
 });
 
