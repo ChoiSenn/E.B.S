@@ -62,8 +62,9 @@ client.connect((err) => {
   if(err) {
     throw err;
   }else{
-  logging('DBMS Connected !!');
-}
+    logging('DBMS Connected !!');
+  }
+client.on('error', function() {});
   // user/post 테이블 없으면 생성 코드 차후 추가
 });
 
