@@ -47,9 +47,9 @@ function logging(logstr){
 // MySQL 데이터베이스 구현
 try{
   var client = mysql.createConnection({
-    host: 10.178.0.2,
+    host: 'localhost',
     port: 3306,
-    user: 'ebs',
+    user: 'root',
     password: '123456',
     database: 'ebs',
     dateStrings: 'date'
@@ -1525,7 +1525,7 @@ app.use(function(err, req, res, next) {
 var http = require('http').Server(app);
 
 // 서버 동작
-http.listen(3000, function(){
+http.listen(80, function(){
   console.log('server Running!! >> http://localhost:80');
 });
 
