@@ -45,7 +45,6 @@ function logging(logstr){
 }
 
 // MySQL 데이터베이스 구현
-function sqlconnect(){
   try{
     var client = mysql.createConnection({
       host: 'us-cdbr-east-04.cleardb.com',
@@ -67,7 +66,6 @@ function sqlconnect(){
     }
     // user/post 테이블 없으면 생성 코드 차후 추가
   });
-}
 
 
 // 서버 생성
