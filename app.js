@@ -44,37 +44,28 @@ function logging(logstr){
   });
 }
 
-
-
-var client = mysql.createConnection({
-  host: 'us-cdbr-east-04.cleardb.com',
-  port: 3306,
-  user: 'bfeaf817fb6eca',
-  password: 'ce1bb749',
-  database: 'heroku_878f6cb9b7d2488',
-  dateStrings: 'date'
-});
-
-function handleDisconnect() {
-  client.connect(function(err) {
-    if(err) {
-      console.log('error when connecting to db:', err);
-      setTimeout(handleDisconnect, 2000);
-    }
+// MySQL 데이터베이스 구현
+try{
+  var client = mysql.createConnection({
+    host: 'localhost',
+    port: 3306,
+    user: 'root',
+    password: '123456',
+    database: 'ebs',
+    dateStrings: 'date'
   });
-
-  client.on('error', function(err) {
-    console.log('db error', err);
-    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-      return handleDisconnect();
-    } else {
-      throw err;
-    }
-  });
+} catch(e){
+  console.log(e.name);
+  console.log(e.message);
 }
-
-handleDisconnect();
-
+client.connect((err) => {
+  if(err) {
+    throw err;
+  }else{
+  logging('DBMS Connected !!');
+}
+  // user/post 테이블 없으면 생성 코드 차후 추가
+});
 
 // 서버 생성
 var app = express();
@@ -624,15 +615,48 @@ app.post('/edit/:id', upload.single('file'), (req, res) => {
   var file = `/files/${name}`;
   var deadline = req.body.date + ' ' + req.body.time+':00';
 
-  client.query('UPDATE post SET date=?, title=?, content=?, category=?, file=?, deadline=? WHERE id=?', [now(), title, content, category, file, deadline, id], function(err, result){
-    if(err){
-      logging('오류');
-    } else{
+  let orgFilename  = req.file.filename;
+  let extension    = orgFilename.substr(-4, 4);  // 파일 확장자 ==> txt, jpg, png, mp4 암호화 및 복호화 OK
+  let filename     = orgFilename.replace(extension, '');  // 원본 파일
+  let orgfilePath  = 'files/';    // 원본 파일 경로
+  let encrfilePath = 'encFiles/'; // 암호화 파일 저장 경로
+  let decrfilePath = 'decFiles/'; // 복호화 파일 저장 경로
+
+  let orgPathNfile = orgfilePath  + orgFilename;  // 원본 파일 경로+파일명
+  let encrPathNfile= encrfilePath + filename + '.crypt'; // 암호화 파일 경로+파일명 저장용
+
+  console.log("원 본 폴더: ", orgfilePath);
+  console.log("원 본 파일: ", orgPathNfile);
+  console.log("암호화폴더: ", encrfilePath);
+  console.log("암호화파일: ", encrPathNfile);
+
+  // 암호화 저장
+  if (fs.existsSync(encrPathNfile)) {  // 암호화 키로 파일 암호화, 암호화 파일이 있으면 에러발생, 검사-삭제후 실행코드 필요!!
+     console.log("기존 암호화 파일 삭제 ");
+     fs.unlink(encrPathNfile, function() {}); // 암호화 파일 존재시 삭제
+  }
+  let f = new encrypt.FileEncrypt(orgPathNfile, encrfilePath, '.crypt', false); // false=파일명 변경 안함, true=무작위 파일명 생성
+  f.openSourceFile();
+  f.encrypt(key);
+  encrPathNfile = f.encryptFilePath;  // 암호화된 새 파일명(경로포함) 저장
+  console.log("encrypt sync done");
+
+  fs.unlink(orgPathNfile, function() {}); // 암호화 전 파일 삭제
+
+  if(deadline < now()){
+    logging(now() + ' : 날짜 입력 오류!');
+    res.send("<script>alert('잘못된 개찰일 설정입니다.');location.href='/mypage';</script>");
+  }else{
+    client.query('UPDATE post SET date=?, title=?, content=?, category=?, file=?, deadline=?, filememe=? WHERE id=?', [now(), title, content, category, encrPathNfile, deadline, extension, id], function(err, result){
+      if(err){
+        logging(now() + ' : 공고 작성 DB 오류!');
+        res.send("<script>alert('오류');location.href='/mypage';</script>");
+      }else{
       logging(now() + ' : 글이 수정되었습니다.');
       res.send("<script>location.href='/mypage';</script>");
     }
   });
-});
+}});
 
 //로그인 요청
 app.get('/plzlogin', function(req, res, next){
@@ -848,13 +872,8 @@ app.get('/bid/:id', function(req, res, next){
           logging(now() + ' : 자신이 올린 공고에 입찰을 신청하였습니다..');
           res.send("<script>alert('자신이 올린 공고에는 입찰 신청할 수 없습니다.');location.href='/posting';</script>");
         } else{
-          f = result[0].bid_file;
-          fi = f.split('\\');
-          fil = fi[1];
-          file = fil.split('.');
           res.render('bid', {
-            row: row[0],
-            file: file[0]
+            row: row[0]
           });
         }
       }else{
@@ -1534,7 +1553,7 @@ app.use(function(err, req, res, next) {
 var http = require('http').Server(app);
 
 // 서버 동작
-http.listen(process.env.PORT || 3000, function(){
+http.listen(80, function(){
   console.log('server Running!! >> http://localhost:80');
 });
 
