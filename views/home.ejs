@@ -66,32 +66,35 @@
           </div>
         </div>
       </div>
-
         <div id="po">
-          <div id="notice">
-            <ul>
-              <h3>공지사항</h3>
-              <br>
-              <li>- <a href="/noticePosts4">문의하기 관련 주의사항</a></li>
-              <li>- <a href="/noticePosts3">파일 첨부 관련 주의사항</a></li>
-              <li>- <a href="/noticePosts2">EBS 사이트 이용 공지사항</a></li>
-              <li>- <a href="/noticePosts1">전체 공지사항</a></li>
-            </ul>
-          </div>
-          <div id="post">
-            <ul>
-              <h3>입찰 공고</h3>
-              <br>
-              <%
-              for(var i = 0; i < 4; i++){
-                  var data = result[i];
-              %>
-                <li>
-                  <p>- <a href="/post/<%= data.id %>"><%= data.title %></a></p>
-                </li>
+          <div id="pack">
+            <div id="notice">
+              <ul>
+                <h3>공지사항</h3>
                 <br>
-              <% } %>
-            </ul>
+                <li>- <a href="/noticePosts4">문의하기 관련 주의사항</a></li>
+                <li>- <a href="/noticePosts3">파일 첨부 관련 주의사항</a></li>
+                <li>- <a href="/noticePosts2">EBS 사이트 이용 공지사항</a></li>
+                <li>- <a href="/noticePosts1">전체 공지사항</a></li>
+              </ul>
+            </div>
+          </div>
+          <div id="pack">
+            <div id="post">
+              <ul>
+                <h3>입찰 공고</h3>
+                <br>
+                <%
+                for(var i = 0; i < 4; i++){
+                    var data = result[i];
+                %>
+                  <li>
+                    <p>- <a href="/post/<%= data.id %>"><%= data.title %></a></p>
+                  </li>
+                  <br>
+                <% } %>
+              </ul>
+            </div>
           </div>
         </div>
         <div id="banner2">

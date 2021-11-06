@@ -52,9 +52,14 @@ body{background-color: #F7EBED;}
 .section [id="slide04"]:checked ~ .slidewrap .control04 {display:block;}
 #po{width: 1000px; margin: 0 auto; display: flex; justify-content: space-around;
   margin-top: 60px; margin-bottom: 30px; font-family: 'Jeju Gothic', sans-serif;}
-#notice{float: left; font-size: 20px; font-family: 'Jeju Gothic', sans-serif;}
-#post{ font-size: 20px;}
-#post li p{float:left;}
+#notice{float: left; font-size: 20px; font-family: 'Jeju Gothic', sans-serif; background-color: #E4C4C8;
+  border-radius: 8px; padding: 10px; width: 350px; }
+#notice li{ font-size: 20px; margin-bottom: 10px;}
+#notice h3{font-size: 22px; margin-top: 10px}
+#post{width: 350px; font-size: 20px; background-color: #E4C4C8; border-radius: 8px; padding: 10px;
+  padding-bottom: 50px;}
+#post li p{float:left; font-size: 20px; margin-bottom: 10px;}
+#post h3{font-size: 22px; margin-top: 10px}
 #po h3{text-align: center;}
 li a:link{color: #3c2832;}
 li a:visited{color: #3c2832;}
@@ -64,6 +69,7 @@ li a:visited{color: #3c2832;}
 #banner2 a:link{color: #3c2832;}
 #banner2 a:hover{color: #3c2832;}
 #banner2 a:visited{color: #3c2832;}
+#pack{background-color: #956C78; padding: 10px; border-radius: 8px;}
 
 /* bottom */
 #bottom{margin-top: 80px; float: right; width: 1024px;}

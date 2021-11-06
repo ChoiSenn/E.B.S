@@ -48,6 +48,8 @@ body{background-color: #F7EBED;}
 #sear p{margin-left: 10px; margin-right: 10px;}
 #sear{margin-top: 18px;}
 #s{height: 20px; width: 60px; font-size: 14px; font-weight: bolder; margin-left: 50px;}
+#sear{margin-top: 18px; margin-left: 30px;}
+#s{height: 36px; width: 70px; font-size: 14px; margin-left: 50px; position: relative; bottom: 10px; font-size: 20px; font-family: 'Jeju Gothic', sans-serif; background-color: #F3DEE0; border-radius: 8px;}
 
 /* bottom */
 #bottom{margin-top: 40px; float: right; width: 1024px;}

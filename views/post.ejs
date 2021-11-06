@@ -24,6 +24,7 @@
           <p id= 'date'><%= row.date %></p>
           <!-- <p id='count'><%= row.count %></p> -->
         </div>
+        <p id="dia">─ ◆ ◆ ◆ ─</p>
         <p id='content'><%= row.content %></p>
         <p id='deadline'>마감기한 : <%= row.deadline %></p>
         <p id='a'>(자세한 설명은 첨부파일을 확인하여주세요.)</p>
@@ -67,18 +68,19 @@
   /* 본문 */
   #main{padding-top: 30px; padding-bottom: 30px; width:100%;}
   #main p{text-align: center; font-family: 'Jeju Gothic', sans-serif;}
-  #title{font-size: 40px; text-align:center; font-weight:bold; font-family: 'Jeju Gothic', sans-serif;}
-  #cate{text-align:center; font-size: 26px; font-weight: bold; color: #956C78; font-family: 'Jeju Gothic', sans-serif;}
+  #title{margin-top: 30px; margin-bottom: 10px; font-size: 40px; text-align:center; font-weight:bold; font-family: 'Jeju Gothic', sans-serif;}
+  #cate{text-align:center; font-size: 26px; font-weight: bold; color: #956C78; font-family: 'Jeju Gothic', sans-serif; margin-bottom: 50px;}
   #bu{margin-top: 30px; width: 500px; height: 50px; margin: 0 auto; margin-bottom: 20px; margin-top: 10px; font-family: 'Jeju Gothic', sans-serif;}
   #auth{float:left;}
   #date{float: right;}
   #count{float: right;}
-  #content{margin-bottom: 50px; font-size: 26px; width: 100%; font-family: 'Jeju Gothic', sans-serif;}
-  #deadline{font-size: 20px; font-weight: bold; font-family: 'Jeju Gothic', sans-serif;}
-  #bid{width: 200px; height: 50px; font-size: 20px; font-weight: bolder; border-radius: 8px; margin: 0 auto; padding-top: 20px; margin-top: 50px;
+  #content{margin-bottom: 80px; font-size: 26px; width: 100%; font-family: 'Jeju Gothic', sans-serif;}
+  #deadline{margin: 0 auto;font-size: 20px; font-weight: bold; font-family: 'Jeju Gothic', sans-serif; margin-bottom: 20px; border-bottom: 2px solid black; width: 290px;}
+  #bid{width: 200px; height: 45px; font-size: 23px; font-weight: bolder; border-radius: 8px; margin: 0 auto; padding-top: 20px; margin-top: 50px;
     background-color: #DCBEC3; color: #3c2832; padding-left: 70px; margin-bottom: 30px; font-family: 'Jeju Gothic', sans-serif;}
   #color:link{color: #956C78;}
   #color:visited{color: #956C78;}
+  #dia{font-size: 24px; color: #3c2832; margin-bottom: 50px;}
 
   /* bottom */
   #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}
