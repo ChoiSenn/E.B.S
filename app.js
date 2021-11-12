@@ -559,14 +559,82 @@ app.get('/mypage', function(req, res, next){
     sql = sql + order + day + recent;
   }
 
+  var newsql = 'SELECT * FROM user WHERE user_id=?';
+  var asksql = 'SELECT ask_date FROM ask WHERE ask_postauth=? ORDER BY ask_date DESC';
+  var answersql = 'SELECT ask_answertime FROM ask WHERE ask_auth=? ORDER BY ask_answertime DESC';
+
   if(req.session.loggedin == true){
     client.query(sql, [req.session.name], function(err, result){
-      res.render('mypage.ejs',{
-        user_id: req.session.userid,
-        name: req.session.name,
-        provider: req.session.prov,
-        created_at: req.session.date,
-        result: result
+      client.query(newsql, [req.session.userid], function(err, results){
+        client.query(asksql, [req.session.name], function(err, asknew){
+          if(err){
+
+          } else{
+            client.query(answersql, [req.session.name], function(err, answernew){
+              if(err){
+
+              } else{
+                if(asknew[0]){
+                  if(answernew[0]){
+                    logging(1);
+                    res.render('mypage.ejs',{
+                      user_id: req.session.userid,
+                      name: req.session.name,
+                      provider: req.session.prov,
+                      created_at: req.session.date,
+                      result: result,
+                      userask: results[0].ask_time,
+                      useranswer: results[0].answer_time,
+                      ask: asknew[0].ask_date,
+                      answer: answernew[0].ask_answertime
+                    });
+                  }else{
+                    logging(2);
+                    res.render('mypage.ejs',{
+                      user_id: req.session.userid,
+                      name: req.session.name,
+                      provider: req.session.prov,
+                      created_at: req.session.date,
+                      result: result,
+                      userask: results[0].ask_time,
+                      useranswer: results[0].answer_time,
+                      ask: asknew[0].ask_date,
+                      answer: 0
+                    });
+                  }
+                } else{
+                  if(answernew[0]){
+                    logging(3);
+                    res.render('mypage.ejs',{
+                      user_id: req.session.userid,
+                      name: req.session.name,
+                      provider: req.session.prov,
+                      created_at: req.session.date,
+                      result: result,
+                      userask: results[0].ask_time,
+                      useranswer: results[0].answer_time,
+                      ask: 0,
+                      answer: answernew[0].ask_answertime
+                    });
+                  } else{
+                    logging(4);
+                    res.render('mypage.ejs',{
+                      user_id: req.session.userid,
+                      name: req.session.name,
+                      provider: req.session.prov,
+                      created_at: req.session.date,
+                      result: result,
+                      userask: results[0].ask_time,
+                      useranswer: results[0].answer_time,
+                      ask: 0,
+                      answer: 0
+                    });
+                  }
+                }
+              }
+            });
+          }
+        });
       });
     });
     logging(now() + ' : 마이페이지에 접속하였습니다.');
@@ -920,13 +988,23 @@ app.get('/ask/:post_id', function(req, res, next){
 
 app.get('/answer', function(req, res, next){
   var name = req.session.name;
-  var sql = 'SELECT * FROM ask WHERE ask_postauth=? ORDER BY ask_date DESC';
-  client.query(sql, [name], function(err, result){
+  var id = req.session.idnum;
+  logging(id);
+
+  var answertime = 'UPDATE user SET ask_time=? WHERE id=?';
+  client.query(answertime, [now(), id], function(err, results){
     if(err){
-      logging('DB 오류!');
-    } else{
-      res.render('answer.ejs', {
-        result: result
+      logging('DB오류');
+    }else{
+      var sql = 'SELECT * FROM ask WHERE ask_postauth=? ORDER BY ask_date DESC';
+      client.query(sql, [name], function(err, result){
+        if(err){
+          logging('DB 오류!');
+        } else{
+          res.render('answer.ejs', {
+            result: result
+          });
+        }
       });
     }
   });
@@ -995,13 +1073,22 @@ app.get('/answering/:id', function(req, res, next){
 
 app.get('/myask', function(req, res, next){
   var name = req.session.name;
-  var sql = 'SELECT * FROM ask WHERE ask_auth=? ORDER BY ask_date DESC';
-  client.query(sql, [name], function(err, result){
+  var id = req.session.idnum;
+
+  var asktime = 'UPDATE user SET answer_time=? WHERE id=?';
+  client.query(asktime, [now(), id], function(err, results){
     if(err){
-      logging('DB 오류!');
+      logging('DB오류');
     } else{
-      res.render('myask.ejs', {
-        result: result
+      var sql = 'SELECT * FROM ask WHERE ask_auth=? ORDER BY ask_date DESC';
+      client.query(sql, [name], function(err, result){
+        if(err){
+          logging('DB 오류!');
+        } else{
+          res.render('myask.ejs', {
+            result: result
+          });
+        }
       });
     }
   });
@@ -1191,8 +1278,8 @@ app.post('/signup', function(request, response){
             // 보안을 위해 패스워드 암호화
             var encryption = encryptionPW(pd)
             // 아이디와 암호화 한 패스워드를 DB에 저장
-            signupsql = 'INSERT INTO user (user_id, password, name, provider, created_at, phone_num) VALUES (?, ?, ?, ?, ?, ?)';
-            client.query(signupsql, [id, encryption, name, provider, time, phone], function(err, result, fields){
+            signupsql = 'INSERT INTO user (user_id, password, name, provider, created_at, phone_num, ask_time, answer_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+            client.query(signupsql, [id, encryption, name, provider, time, phone, now(), now()], function(err, result, fields){
               if (err){
                 logging(now() + ' : 회원가입 DB 오류! 2');
                 response.send("<script>alert('오류');location.href='/signup';</script>");
@@ -1425,8 +1512,8 @@ app.post('/answering/:id', upload.single('file'), function(req, res, next){
 
     fs.unlink(orgPathNfile, function() {}); // 암호화 전 파일 삭제
 
-    var sql = 'UPDATE ask SET ask_answer=?, ask_answerfile=?, ask_answerfilememe=? WHERE ask_id=?';
-    client.query(sql, [ask_answer, encrPathNfile, extension, post_id], function(err, result){
+    var sql = 'UPDATE ask SET ask_answer=?, ask_answerfile=?, ask_answerfilememe=?, ask_answertime=? WHERE ask_id=?';
+    client.query(sql, [ask_answer, encrPathNfile, extension, now(), post_id], function(err, result){
       if(err){
         logging('DB오류!');
       } else{
@@ -1434,9 +1521,13 @@ app.post('/answering/:id', upload.single('file'), function(req, res, next){
       }
     });
   } else{
-    var sql = 'UPDATE ask SET ask_answer=? WHERE ask_id=?';
-    client.query(sql, [ask_answer, post_id], function(err, result){
+    var sql = 'UPDATE ask SET ask_answer=?, ask_answertime=? WHERE ask_id=?';
+    client.query(sql, [ask_answer, now(), post_id], function(err, result){
       if(err){
+        logging(ask_answer);
+        logging(now());
+        logging(post_id);
+        logging(result);
         logging('DB오류!');
       } else{
         res.send("<script>alert('성공적으로 문의 답변을 등록하였습니다!');location.href='/answer';</script>");

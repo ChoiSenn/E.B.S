@@ -45,9 +45,11 @@ td{width: 806px; text-align: center; height: 30px;}
   margin-top: 30px; border-radius: 8px; padding-top: 20px;}
 #asking{float: left; width: 400px; margin-left: 320px; margin-top: 20px;}
 #ask{width: 180px; height: 40px; background-color: #956C78; color: #F7EBED; font-size: 20px;
-  border-radius: 8px; padding-top: 20px;float: left;}
+  border-radius: 8px; padding-top: 20px; float: left;}
 #myask{width: 180px; height: 40px; background-color: #956C78; color: #F7EBED; font-size: 20px;
-    border-radius: 8px; padding-top: 20px;float: left; margin-left: 20px;}
+    border-radius: 8px; padding-top: 20px; float: left; margin-left: 20px;}
+#new{position: relative; top: 26px; right: 20px;}
+#new2{position: relative; top: 26px; left: 180px;}
 #posts{background-color: #956C78; width: 834px; float: right; border-radius: 8px; margin-top: 30px; margin-right: 90px;}
 #post{background-color: #F3DEE0; width: 814px; height: 100px;
   margin: 10px; border-radius: 8px;}
