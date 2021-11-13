@@ -1,5 +1,16 @@
 # E.B.S
 
+게시판 기능 설명
+Key summary
+포트폴리오에서 강조하고 싶은 내용들을 적습니다. 예를 들어 유닛테스트 Code coverage가 100%라면 적어도 됩니다. 
+Folder structure 소개
+Backend architecture
+DB 스키마
+Frontend architecture
+설치 방법
+실행 방법
+향후 추가 할 기능들
+
 
 안산대학교 IT응용보안과 2B04
 
