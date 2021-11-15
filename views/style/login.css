@@ -31,13 +31,14 @@ body{background-color: #F7EBED;}
 #main h3{margin-top: 10px;}
 #tabel{margin: 0 auto; margin-top: 70px;}
 #id{height: 30px; width:300px; font-size: larger;}
-#pw{height: 30px; width:300px; font-size: larger;}
+#pw{height: 30px; width:300px; font-size: larger; margin-bottom: 10px;}
 #idid{margin-right: 30px;}
 #pwpw{margin-right: 30px;}
 #btnlogin{margin-top: 80px; width: 100px; height: 40px; font-size: larger;
    font-family: 'Jeju Gothic', sans-serif; color: #F7EBED; background-color: #956C78;
    border: none; border-radius: 16px; transition-duration: 0.5s;}
 #btnlogin:hover{color: #3c2832; background-color: #DCBEC3; transition-duration: 0.5s;}
+#re{color: #956C78; margin-right: 80px;}
 
 /* bottom */
 #bottom{margin-top: 80px;}

@@ -21,6 +21,7 @@ var mime = require('mime');
 var CryptoJS = require('crypto-js');
 var exec = require('child_process').execFile;
 const encrypt = require('node-file-encrypt');
+const nodemailer = require('nodemailer');
 
 var passed = false; // 로그인 비활성화 기본 상태
 
@@ -123,6 +124,40 @@ var storage = multer.diskStorage({
 var upload = multer({
   storage: storage
 });
+
+// 랜덤 비밀번호
+var variable = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z".split(",");
+
+function createRandomPassword(variable, passwordLength){
+  var randomString = "";
+  for(var j=0; j<passwordLength; j++){
+    randomString += variable[Math.floor(Math.random() * variable.length)];
+  }
+  return randomString;
+}
+
+// 임시 메일 보내기
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  port: 465,
+  secure: true,
+  auth: {
+    user: 'ebsbidding@gmail.com',
+    pass: 'ebs0207!!'
+  },
+});
+
+var randomPassword = createRandomPassword(variable, 8);
+var emailOptions = {
+  from: 'ebsbidding@gmail.com',
+  to: 'quite0207@naver.com',
+  subject: 'EBS 웹사이트 임시 비밀번호입니다.',
+  html:
+  "<h1 >EBS 웹사이트에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>"
+              +'<h3 style="color: crimson;">임시 비밀번호로 로그인 하신 후, 반드시 비밀번호를 수정해 주세요.</h3>'
+              ,
+};
+//transporter.sendMail(emailOptions, res);
 
 
 
@@ -1162,6 +1197,10 @@ app.get('/myedit', function(req, res){
   });
 });
 
+app.get('/repassword', function(req, res){
+  res.render('repassword.ejs');
+});
+
 
 
 
@@ -1238,13 +1277,14 @@ app.post('/signup', function(request, response){
   var phone = p1 +'-'+ p2 +'-'+ p3;
   logging(phone);
   var time = now();
+  var email = request.body.email;
 
   // user테이블에 해당 user_ID가 이미 있는지 확인하는 쿼리
   var idcheck = 'SELECT * FROM user WHERE user_id = ?';
   var namecheck = 'SELECT * FROM user WHERE name = ?';
 
   // 입력이 다 되어있는지 확인
-  if(!id || !pd || !pwre || !name || !provider || !ch || !phone){
+  if(!id || !pd || !pwre || !name || !provider || !ch || !phone || !email){
     logging(provider);
     logging(now() + ' : 데이터 입력 값 부족으로 회원가입 실패!');
     response.send("<script>alert('값을 전부 입력해주세요.');location.href='/signup';</script>");
@@ -1278,8 +1318,8 @@ app.post('/signup', function(request, response){
             // 보안을 위해 패스워드 암호화
             var encryption = encryptionPW(pd)
             // 아이디와 암호화 한 패스워드를 DB에 저장
-            signupsql = 'INSERT INTO user (user_id, password, name, provider, created_at, phone_num, ask_time, answer_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-            client.query(signupsql, [id, encryption, name, provider, time, phone, now(), now()], function(err, result, fields){
+            signupsql = 'INSERT INTO user (user_id, password, name, provider, created_at, phone_num, ask_time, answer_time, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            client.query(signupsql, [id, encryption, name, provider, time, phone, now(), now(), email], function(err, result, fields){
               if (err){
                 logging(now() + ' : 회원가입 DB 오류! 2');
                 response.send("<script>alert('오류');location.href='/signup';</script>");

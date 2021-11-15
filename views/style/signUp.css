@@ -31,7 +31,7 @@ body{background-color: #F7EBED;}
 #main h3{margin-top: 10px;}
 #tabel{margin: 0 auto; margin-top: 70px;}
 #id{height: 30px; width:300px; font-size: larger;}
-#pw, #name, #pwre, #idid, #phone_num{height: 30px; width:300px; font-size: larger;}
+#pw, #name, #pwre, #idid, #phone_num, #email{height: 30px; width:300px; font-size: larger;}
 #txtMobile1{height: 30px; font-size: larger; padding-bottom: 1px;}
 #txtMobile2, #txtMobile3{height: 26px; font-size: larger;}
 #buyer, #prov{height: 16px; width:30px; font-size: larger; margin-top: 5px;}
