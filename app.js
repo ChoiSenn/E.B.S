@@ -147,18 +147,6 @@ var transporter = nodemailer.createTransport({
   },
 });
 
-var randomPassword = createRandomPassword(variable, 8);
-var emailOptions = {
-  from: 'ebsbidding@gmail.com',
-  to: 'quite0207@naver.com',
-  subject: 'EBS 웹사이트 임시 비밀번호입니다.',
-  html:
-  "<h1 >EBS 웹사이트에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>"
-              +'<h3 style="color: crimson;">임시 비밀번호로 로그인 하신 후, 반드시 비밀번호를 수정해 주세요.</h3>'
-              ,
-};
-//transporter.sendMail(emailOptions, res);
-
 
 
 
@@ -301,7 +289,7 @@ app.get('/post/:id', function(req, res, next){
       logging(now() + ' : 글 렌더링 오류!');
       res.send("<script>alert('오류');location.href='/home';</script>");
     }else{
-      var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline from post where id=?';
+      var sql = 'SELECT id, auth, date, title, content, category, count, file, deadline, re_bid from post where id=?';
       client.query(sql, [id], function(err, row){
         f = row[0].file;
         fi = f.split('\\');
@@ -1658,6 +1646,83 @@ app.post('/myedit', function(req, res, next){
     })
   }
 });
+
+app.post('/repassword', function(req, res, next){
+  var user_id = req.body.id;
+
+  var sql = 'SELECT * FROM user where user_id=?';
+
+  client.query(sql, [user_id], function(err, result){
+    if(err){
+      logging(now() + ' : DB 오류 발생.');
+      res.send("<script>alert('오류');location.href='/repassword';</script>");
+    } else{
+      if(result[0]){
+        var mail = result[0].email;
+        var randomPassword = createRandomPassword(variable, 8);
+
+        var emailOptions = {
+          from: 'ebsbidding@gmail.com',
+          to: mail,
+          subject: 'EBS 웹사이트 임시 비밀번호입니다.',
+          html:
+          "<h1 >EBS 웹사이트에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>"
+                      +'<h3 style="color: crimson;">임시 비밀번호로 로그인 하신 후, 반드시 비밀번호를 수정해 주세요.</h3>'
+                      ,
+        };
+        transporter.sendMail(emailOptions, res);
+
+        var password = encryptionPW(randomPassword);
+        var pwsql = 'UPDATE user SET password=? WHERE user_id=?';
+
+        client.query(pwsql, [password, user_id], function(err, results){
+          if(err){
+            logging(now() + ' : DB오류');
+            res.send("<script>alert('DB오류.');location.href='/repassword';</script>");
+          } else{
+            logging(now() + ' : 메일 전송');
+            res.send("<script>alert('메일을 전송하였습니다! 확인해주세요.');location.href='/login';</script>");
+          }
+        });
+      } else{
+        logging(now() + ' : 계정이 존재하지 않습니다.');
+        res.send("<script>alert('계정이 존재하지 않습니다.');location.href='/repassword';</script>");
+      }
+    }
+  })
+});
+
+app.post('/open/:id', function(req, res, next){
+  var post_id = req.params.id;
+  var deadline = req.body.date + ' ' + req.body.time+':00';
+
+  var searchsql = 'SELECT * FROM post where id=?';
+  client.query(searchsql, [post_id], function(err, result){
+    if(err){
+      console.log('DB오류');
+    } else{
+      var re_bid = result[0].re_bid + 1;
+      var auth = result[0].auth;
+      var title = result[0].title;
+      var content = result[0].content;
+      var category = result[0].category;
+      var file = result[0].file;
+      var filememe = result[0].filememe;
+
+      var sql = 'INSERT INTO post(auth, date, title, content, category, count, file, deadline, filememe, re_bid) VALUES(?, ?, ?, ?, ?, 0, ?, ?, ?, ?)';
+      var datas = [auth, now(), title, content, category, file, deadline, filememe, re_bid];
+      client.query(sql, datas, function(err, results){
+        if(err){
+          console.log('DB오류');
+        } else{
+          res.redirect('/mypage');
+        }
+      });
+    }
+  });
+});
+
+
 
 
 // catch 404 and forward to error handler

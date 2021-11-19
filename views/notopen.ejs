@@ -18,7 +18,14 @@
       <%- include('menu') %>
     </div>
     <div id="main">
-      <h2>아직 입찰이<br>없습니다.</h2>
+      <h2>입찰이 없습니다.<br>유찰되었습니다.</h2>
+      <form id="" method="post">
+        <p id="t">개찰일</p>
+        <input type="date" name='date' id='date' required/>
+        <input type="time" name='time' id='time' required/>
+        <input type="submit" id="rebid" value="자동 재입찰">
+      </form>
+    </div>
     <div id="bottom">
       <hr>
       <br>
@@ -57,7 +64,10 @@
   #main{font-family: 'Jeju Gothic', sans-serif; text-align: center;  margin-top: 70px;}
   #main p{text-align: center;}
   #main h2{text-align: center; font-family: 'Jeju Gothic', sans-serif; font-size: xx-large;
-    border-bottom: 3px solid black; width:200px; margin: 0 auto; margin-bottom: 70px;}
+    border-bottom: 3px solid black; width:300px; margin: 0 auto; margin-bottom: 70px;}
+  #t{font-size: 20px; margin-bottom: 10px;}
+  #rebid{background-color: #C49AA1; border-radius: 8px; width: 180px; height: 60px; margin: 0 auto; margin-bottom: 70px;
+    font-size: 20px; font-weight: bold; color:  #563945; display: block; margin-top: 30px;}
 
   /* bottom */
   #bottom p{margin-top: 10px; margin-bottom: 30px; text-align: center; font-family: 'Jeju Gothic', sans-serif;}

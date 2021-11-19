@@ -20,38 +20,44 @@
     <div id="main">
       <h2><%= title %><br>입찰 현황</h2>
       <div id="posts">
-
-          <div id="post">
-            <table id="table">
-                <thead>
-                <tr id="head">
-                    <th>기업명</th>
-                    <th>대표</th>
-                    <th>가격</th>
-                    <th>관련 파일</th>
-                    <th>입찰 시각</th>
-                    <th>기타</th>
-                    <th>낙찰</th>
-                </tr>
-                </thead>
-                <%
-                for(var i = 0; i < result.length; i++){
-                    var data = result[i];
-                %>
-                    <tr id="ta">
-                      <td><%= data.bid_firm %></td>
-                      <td><%= data.bid_ceo %></td>
-                      <td><%= data.bid_price %></td>
-                      <td id="color"><a href="/biddownload/<%= data.id %>/<%= file %>"><%= file %></a></td>
-                      <td><%= data.bid_time %></td>
-                      <td><%= data.bid_etc %></td>
-                      <td id="color"><a href="/bidselect/<%= data.post_id %>/<%= data.id %>">선택</a></td>
-                    </tr>
-                    <% } %>
-                </tbody>
-            </table>
-          </div>
-
+        <div id="post">
+          <table id="table">
+              <thead>
+              <tr id="head">
+                  <th>기업명</th>
+                  <th>대표</th>
+                  <th>가격</th>
+                  <th>관련 파일</th>
+                  <th>입찰 시각</th>
+                  <th>기타</th>
+                  <th>낙찰</th>
+              </tr>
+              </thead>
+              <%
+              for(var i = 0; i < result.length; i++){
+                  var data = result[i];
+              %>
+                  <tr id="ta">
+                    <td><%= data.bid_firm %></td>
+                    <td><%= data.bid_ceo %></td>
+                    <td><%= data.bid_price %></td>
+                    <td id="color"><a href="/biddownload/<%= data.id %>/<%= file %>"><%= file %></a></td>
+                    <td><%= data.bid_time %></td>
+                    <td><%= data.bid_etc %></td>
+                    <td id="color"><a href="/bidselect/<%= data.post_id %>/<%= data.id %>">선택</a></td>
+                  </tr>
+                  <% } %>
+              </tbody>
+          </table>
+        </div>
+        <form id="" method="post">
+          <p id="tab">─ ◆ ◆ ◆ ─</p>
+          <h3>입찰 포기</h3>
+          <p id="t">개찰일</p>
+          <input type="date" name='date' id='date' required/>
+          <input type="time" name='time' id='time' required/>
+          <input type="submit" id="rebid" value="자동 재입찰">
+        </form>
     </div>
     <div id="bottom">
       <hr>
@@ -97,6 +103,12 @@
   #ta td{padding-bottom: 10px; font-size: 18px;}
   #color a:link{color: #956C78;}
   #color a:visited{color: #956C78;}
+  #tab{margin-top: 50px;}
+  h3{font-size: 30px; margin-top: 50px;}
+  #t{font-size: 20px; margin-bottom: 10px; margin-top: 20px;}
+  #rebid{background-color: #C49AA1; border-radius: 8px; width: 180px; height: 60px; margin: 0 auto; margin-bottom: 70px;
+    font-size: 20px; font-weight: bold; color:  #563945; display: block; margin-top: 30px;}
+
 
   /* bottom */
   #bottom{margin-top: 70px;}
