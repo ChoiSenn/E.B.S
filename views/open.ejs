@@ -20,6 +20,21 @@
     <div id="main">
       <h2><%= title %><br>입찰 현황</h2>
       <div id="posts">
+        <div id="search">
+          <form id="sear" action="/open/<%= id %>" method="get">
+            <p>작성일 최신순</p>
+            <input type="radio" name="day" value="day_recent" checked='checked' id="in"/>
+            <p>작성일 오래된순</p>
+            <input type="radio" name="day" value="day_latest" id="in"/>
+            <p>가격 높은 순</p>
+            <input type="radio" name="day" value="highprice" id="in"/>
+            <p>가격 낮은 순</p>
+            <input type="radio" name="day" value="lowprice"/>
+            <div id="sub">
+              <input type="submit" name="submit" value="정렬" id="s">
+            </div>
+          </form>
+        </div>
         <div id="post">
           <table id="table">
               <thead>
@@ -108,6 +123,12 @@
   #t{font-size: 20px; margin-bottom: 10px; margin-top: 20px;}
   #rebid{background-color: #C49AA1; border-radius: 8px; width: 180px; height: 60px; margin: 0 auto; margin-bottom: 70px;
     font-size: 20px; font-weight: bold; color:  #563945; display: block; margin-top: 30px;}
+  #search{background-color: #C3909A; width: 100%; border-radius: 8px; float: right; height: 50px; margin-bottom: 50px;}
+  #sear input, #sear p{float: left;}
+  #in{margin-right: 80px;}
+  #sear p{margin-left: 10px; margin-right: 10px;}
+  #sear{margin-top: 18px; margin-left: 60px;}
+  #s{height: 20px; width: 60px; font-size: 14px; font-weight: bolder; margin-left: 100px;}
 
 
   /* bottom */

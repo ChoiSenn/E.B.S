@@ -598,12 +598,17 @@ app.get('/mypage', function(req, res, next){
 
               } else{
                 if(asknew[0]){
+                  if(req.session.prov == 0){
+                    var prov = "구매자";
+                  } else{
+                    var prov = "공급자";
+                  }
                   if(answernew[0]){
                     logging(1);
                     res.render('mypage.ejs',{
                       user_id: req.session.userid,
                       name: req.session.name,
-                      provider: req.session.prov,
+                      provider: prov,
                       created_at: req.session.date,
                       result: result,
                       userask: results[0].ask_time,
@@ -616,7 +621,7 @@ app.get('/mypage', function(req, res, next){
                     res.render('mypage.ejs',{
                       user_id: req.session.userid,
                       name: req.session.name,
-                      provider: req.session.prov,
+                      provider: prov,
                       created_at: req.session.date,
                       result: result,
                       userask: results[0].ask_time,
@@ -631,7 +636,7 @@ app.get('/mypage', function(req, res, next){
                     res.render('mypage.ejs',{
                       user_id: req.session.userid,
                       name: req.session.name,
-                      provider: req.session.prov,
+                      provider: prov,
                       created_at: req.session.date,
                       result: result,
                       userask: results[0].ask_time,
@@ -644,7 +649,7 @@ app.get('/mypage', function(req, res, next){
                     res.render('mypage.ejs',{
                       user_id: req.session.userid,
                       name: req.session.name,
-                      provider: req.session.prov,
+                      provider: prov,
                       created_at: req.session.date,
                       result: result,
                       userask: results[0].ask_time,
@@ -798,10 +803,22 @@ app.get('/opening', function(req, res, next){
 
 app.get('/open/:id', function(req, res, next){
   var id = req.params.id;
-  logging(id);
 
   if(req.session.loggedin == true){
     var sql = 'SELECT * FROM bidding WHERE post_id=?';
+
+    if(req.query.day == 'day_recent'){
+      sql = sql + ' ORDER BY bid_time DESC';
+    } else if (req.query.day == 'day_latest') {
+      sql = sql + ' ORDER BY bid_time ASC';
+    } else if (req.query.day == 'highprice') {
+      sql = sql + ' ORDER BY bid_price DESC';
+    } else if(req.query.day == 'lowprice'){
+      sql = sql + ' ORDER BY bid_price ASC';
+    } else{
+      sql = sql + ' ORDER BY bid_time DESC';
+    }
+
     client.query(sql, [id], function(err, result){
       if(result.length != 0){
         var sqlpost = 'SELECT title FROM post WHERE id=?';

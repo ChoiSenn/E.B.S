@@ -40,6 +40,7 @@ body{background-color: #F7EBED;}
 #sear p, #searc p{font-size: 20px;}
 #searchb{font-size: 24px; margin-top: 8px;}
 #searchbutton{font-size: 20px; margin-top: 8px; font-weight: bolder;}
+#pricesearch *{float: left;}
 
 #men{background-color: skyblue; height: 600px; width: 180px; float: left;}
 #posting{background-color: purple; height: 60px; margin-bottom: 10px;}
