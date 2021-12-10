@@ -1109,7 +1109,7 @@ app.get('/bidOpen', function(req, res, next){
         });
       }else{
         logging(now() + ' : 아직 참여한 입찰이 없습니다.');
-        res.send("<script>alert('아직 참여한 입찰이 없습니다.');location.hre'f='/posting';</script>");
+        res.send("<script>alert('아직 참여한 입찰이 없습니다.');location.href='/posting';</script>");
       }
     });
     logging(now() + ' : 개찰결과 열람 페이지에 접속하였습니다.');
